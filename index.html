@@ -406,26 +406,15 @@
       
         
           
-            <p>This post is encouraged by <a href="https://estertion.win/2018/04/bang-dream-proto%E7%9B%B8%E5%85%B3/" target="_blank" rel="noopener">esterTion’s post</a>. Before I only extract the proto file by hand, but it gives me a easy way to automation. For what is <em>proto file</em> and <em>protobuf</em>, please check <a href="https://developers.google.com/protocol-buffers/" target="_blank" rel="noopener">Google’s documentation</a></p>
-<h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>Bangdream (Full name: BanG Dream! Girls Band Party!, Japanese: バンドリ！ ガールズバンドパーティ！) is a rhythm card game released by Bushiroad and developed by Craftegg with Unity. As of today, Unity is becoming more and more popular among game developers. In Unity 4.x.x, there’s nearly no protection to C# source code. With <a href="https://github.com/0xd4d/dnSpy" target="_blank" rel="noopener">dnSpy</a> or <a href="https://github.com/icsharpcode/ILSpy" target="_blank" rel="noopener">ILSpy</a> it’s very easy to read the code or do some hack.</p>
-<p>From Unity 5, a method called “il2cpp” is applied to convert C# bytecode (IL) to native code. If target is Android, a <code>libil2cpp.so</code> can be found under <code>lib</code> directory. Thanks to Perfare’s amazing tool <a href="https://github.com/Perfare/Il2CppDumper" target="_blank" rel="noopener">Il2CppDumper</a>, reading the code is as easy as before.</p>
-<p>Il2CppDumper will generate some files, if you don’t want to read source code with IDA, then just get the <code>dump.cs</code> which includes all classes, methods and variables. For game like Bangdream, you can get rich infomations from this file, like AES key and protobuf definitions. I think Craftegg want to avoid unnecessary files, so they use <em>protobuf-net</em> to write protobuf definitions in C# code.</p>
-<h2 id="Analyse"><a href="#Analyse" class="headerlink" title="Analyse"></a>Analyse</h2><p>The method name in <code>dump.cs</code> are very reasonable. The protobuf definition is always stored in class like “GetResponse” or “PostRequest” prefixed by API path. So “SuiteMasterGetResponse” is the class storing the protobuf definition of game master data (or game database). By reading the <a href="https://estertion.win/2018/04/bang-dream-proto%E7%9B%B8%E5%85%B3/" target="_blank" rel="noopener">esterTion’s post</a> and <a href="https://gist.github.com/esterTion/768c646a83a089af9e5fbb83b77a59fc" target="_blank" rel="noopener">gist code</a>, it seems not hard to extract proto file from the protobuf definition in il2cpp file. The only problem is how to get the Tag number, which can only be found in binary file.</p>
-<h3 id="Read-and-rewrite-code"><a href="#Read-and-rewrite-code" class="headerlink" title="Read and rewrite code"></a>Read and rewrite code</h3><p>The original code of esterTion is written in PHP. Firstly it read the <code>dump.cs</code> and extract the basic structure of protobuf then generate the valid “proto2” file. The best parts are the regular expressions extracting the class body and ProtoMemberAttribute (=proto message member), but sadly it can only run in PCRE system (like PHP). In Python some grammar is invalid (subroutine and atomic group), it spent me hours to constructure working regex for Python.</p>
-<p>Now I get the proto file but with all Tags as hex address. The original <code>getTag</code> method is not working. Is the original code wrong? Probably not. esterTion seems to use the Mach-O binary, which has the different code from Android library. It needs some adjustments.</p>
-<h3 id="Get-the-right-Tag"><a href="#Get-the-right-Tag" class="headerlink" title="Get the right Tag"></a>Get the right Tag</h3><p>Let’s open the <code>libil2cpp.so</code> with <a href="https://hexed.it/" target="_blank" rel="noopener">hex code editor</a> and jump to the address. The hex code for members is like: <code>04 00 90 E5 01 10 A0 E3 ... 04 00 90 E5 02 10 A0 E3 ....</code> One member begins with <code>04 00 90 E5</code>, and the following number keeps changing. Do a verfication and you can find that this is exactly the Tag number you want. Notice that the number is stored in 12 bits, so do not only extract one byte.</p>
-<p>But it’s only one type. Another type begins with <code>10 4C 2D E9</code>, the Tag number is 12 bytes away. So replace the original <code>getTag</code> code with this:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Only for Python 3</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getTag</span><span class="params">(address)</span>:</span></span><br><span class="line">  offset = address &amp; <span class="number">0xFFFFFFFF</span></span><br><span class="line"></span><br><span class="line">  prog.seek(offset)</span><br><span class="line">  inst = prog.read(<span class="number">4</span>)</span><br><span class="line">  inst = int.from_bytes(inst, byteorder=<span class="string">'little'</span>, signed=<span class="keyword">False</span>)</span><br><span class="line">  <span class="keyword">if</span> inst == <span class="number">0xe5900004</span>: <span class="comment"># caution! little-endian</span></span><br><span class="line">    prog.seek(offset + <span class="number">4</span>)</span><br><span class="line">    <span class="keyword">return</span> int.from_bytes(prog.read(<span class="number">2</span>), <span class="string">'little'</span>, signed=<span class="keyword">False</span>) &amp; <span class="number">0xfff</span></span><br><span class="line">  <span class="keyword">elif</span> inst == <span class="number">0xe92d4c10</span>: <span class="comment"># caution! little-endian</span></span><br><span class="line">    prog.seek(offset + <span class="number">12</span>)</span><br><span class="line">    <span class="keyword">return</span> int.from_bytes(prog.read(<span class="number">2</span>), <span class="string">'little'</span>, signed=<span class="keyword">False</span>) &amp; <span class="number">0xfff</span></span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    print(hex(inst), hex(address))</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>A small problem: the Tag number 300(0x12c) is stored as 3915(0xf4b). Can’t figure out the reason and made a hardcoding.</p>
-</blockquote>
-<h2 id="Proto-supports-map"><a href="#Proto-supports-map" class="headerlink" title="Proto supports map"></a>Proto supports map</h2><p>Proto files now supports map definition, but it will be compiled to a array structure with objects referring the map key and value. For example, the following protos is equivalent:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">message test &#123;</span><br><span class="line">  map&lt;uint32, string&gt; entries = 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">message testEntry &#123;</span><br><span class="line">  required uint32 key = 1;</span><br><span class="line">  required string value = 2;</span><br><span class="line">&#125;</span><br><span class="line">message test &#123;</span><br><span class="line">  repeated testEntry entries = 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>The original code only supports the second one. The protobuf for Python supports to generate map structure from the first definition. So the first one is optimal for me. Some changes were made to generate the beautiful map definition.</p>
-<h2 id="Final-words"><a href="#Final-words" class="headerlink" title="Final words"></a>Final words</h2><p>You can find the gist code <a href="https://gist.github.com/dnaroma/1bfc901d95f777a340fcb615d6a96bd3" target="_blank" rel="noopener">here</a>. I’ve tested the generated proto file, it fits the game master data. It’s time to say goodbye to manual writting proto file.</p>
-
-          
+          This post is encouraged by esterTion’s post. Before I only extract the proto file by hand, but it gives me a easy way to automation. For what is proto
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/15/auto-gen-bang-proto/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -577,17 +566,15 @@
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
+          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/15/hello-world/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
