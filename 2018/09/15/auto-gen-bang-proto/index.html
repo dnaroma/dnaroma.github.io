@@ -108,20 +108,25 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="DNARoma">
-<meta property="og:url" content="http://dnaroma.github.io/index.html">
+  <meta name="description" content="This post is encouraged by esterTion’s post. Before I only extract the proto file by hand, but it gives me a easy way to automation. For what is proto file and protobuf, please check Google’s document">
+<meta name="keywords" content="Bangdream,unity,il2cpp,protobuf,automation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Generating Proto File For Bangdream">
+<meta property="og:url" content="http://dnaroma.github.io/2018/09/15/auto-gen-bang-proto/index.html">
 <meta property="og:site_name" content="DNARoma">
+<meta property="og:description" content="This post is encouraged by esterTion’s post. Before I only extract the proto file by hand, but it gives me a easy way to automation. For what is proto file and protobuf, please check Google’s document">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-09-15T12:04:21.435Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="DNARoma">
+<meta name="twitter:title" content="Generating Proto File For Bangdream">
+<meta name="twitter:description" content="This post is encouraged by esterTion’s post. Before I only extract the proto file by hand, but it gives me a easy way to automation. For what is proto file and protobuf, please check Google’s document">
 
 
 
 
 
 
-  <link rel="canonical" href="http://dnaroma.github.io/"/>
+  <link rel="canonical" href="http://dnaroma.github.io/2018/09/15/auto-gen-bang-proto/"/>
 
 
 
@@ -131,7 +136,7 @@
   };
 </script>
 
-  <title>DNARoma</title>
+  <title>Generating Proto File For Bangdream | DNARoma</title>
   
 
 
@@ -187,8 +192,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -229,7 +233,7 @@
         
         
           
-          <li class="menu-item menu-item-home menu-item-active">
+          <li class="menu-item menu-item-home">
     <a href="/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
   </li>
@@ -289,9 +293,9 @@
           
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -323,11 +327,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/15/auto-gen-bang-proto/" itemprop="url">
-                  Generating Proto File For Bangdream
-                </a>
+          <h1 class="post-title" itemprop="name headline">Generating Proto File For Bangdream
               
             
           </h1>
@@ -404,9 +404,7 @@
       
 
       
-        
-          
-            <p>This post is encouraged by <a href="https://estertion.win/2018/04/bang-dream-proto%E7%9B%B8%E5%85%B3/" target="_blank" rel="noopener">esterTion’s post</a>. Before I only extract the proto file by hand, but it gives me a easy way to automation. For what is <em>proto file</em> and <em>protobuf</em>, please check <a href="https://developers.google.com/protocol-buffers/" target="_blank" rel="noopener">Google’s documentation</a></p>
+        <p>This post is encouraged by <a href="https://estertion.win/2018/04/bang-dream-proto%E7%9B%B8%E5%85%B3/" target="_blank" rel="noopener">esterTion’s post</a>. Before I only extract the proto file by hand, but it gives me a easy way to automation. For what is <em>proto file</em> and <em>protobuf</em>, please check <a href="https://developers.google.com/protocol-buffers/" target="_blank" rel="noopener">Google’s documentation</a></p>
 <h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>Bangdream (Full name: BanG Dream! Girls Band Party!, Japanese: バンドリ！ ガールズバンドパーティ！) is a rhythm card game released by Bushiroad and developed by Craftegg with Unity. As of today, Unity is becoming more and more popular among game developers. In Unity 4.x.x, there’s nearly no protection to C# source code. With <a href="https://github.com/0xd4d/dnSpy" target="_blank" rel="noopener">dnSpy</a> or <a href="https://github.com/icsharpcode/ILSpy" target="_blank" rel="noopener">ILSpy</a> it’s very easy to read the code or do some hack.</p>
 <p>From Unity 5, a method called “il2cpp” is applied to convert C# bytecode (IL) to native code. If target is Android, a <code>libil2cpp.so</code> can be found under <code>lib</code> directory. Thanks to Perfare’s amazing tool <a href="https://github.com/Perfare/Il2CppDumper" target="_blank" rel="noopener">Il2CppDumper</a>, reading the code is as easy as before.</p>
 <p>Il2CppDumper will generate some files, if you don’t want to read source code with IDA, then just get the <code>dump.cs</code> which includes all classes, methods and variables. For game like Bangdream, you can get rich infomations from this file, like AES key and protobuf definitions. I think Craftegg want to avoid unnecessary files, so they use <em>protobuf-net</em> to write protobuf definitions in C# code.</p>
@@ -425,8 +423,6 @@
 <p>The original code only supports the second one. The protobuf for Python supports to generate map structure from the first definition. So the first one is optimal for me. Some changes were made to generate the beautiful map definition.</p>
 <h2 id="Final-words"><a href="#Final-words" class="headerlink" title="Final words"></a>Final words</h2><p>You can find the gist code <a href="https://gist.github.com/dnaroma/1bfc901d95f777a340fcb615d6a96bd3" target="_blank" rel="noopener">here</a>. I’ve tested the generated proto file, it fits the game master data. It’s time to say goodbye to manual writting proto file.</p>
 
-          
-        
       
     </div>
 
@@ -444,176 +440,44 @@
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://dnaroma.github.io/2018/09/15/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="DNARoma">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="DNARoma">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/15/hello-world/" itemprop="url">
-                  Hello World
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-09-15 12:09:32" itemprop="dateCreated datePublished" datetime="2018-09-15T12:09:32+02:00">2018-09-15</time>
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Offtopic/" itemprop="url" rel="index"><span itemprop="name">Offtopic</span></a></span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/Bangdream/" rel="tag"># Bangdream</a>
           
-
+            <a href="/tags/unity/" rel="tag"># unity</a>
           
-            
+            <a href="/tags/il2cpp/" rel="tag"># il2cpp</a>
           
-
+            <a href="/tags/protobuf/" rel="tag"># protobuf</a>
           
+            <a href="/tags/automation/" rel="tag"># automation</a>
           
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
       
 
       
       
-        <div class="post-eof"></div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/15/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
       
     </footer>
   </div>
@@ -623,14 +487,15 @@
   </article>
 
 
-    
-  </section>
-
-  
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -651,8 +516,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -742,6 +616,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Background"><span class="nav-number">1.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Analyse"><span class="nav-number">2.</span> <span class="nav-text">Analyse</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Read-and-rewrite-code"><span class="nav-number">2.1.</span> <span class="nav-text">Read and rewrite code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Get-the-right-Tag"><span class="nav-number">2.2.</span> <span class="nav-text">Get the right Tag</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Proto-supports-map"><span class="nav-number">3.</span> <span class="nav-text">Proto supports map</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Final-words"><span class="nav-number">4.</span> <span class="nav-text">Final words</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -872,6 +762,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
 
   
 
