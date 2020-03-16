@@ -1,0 +1,836 @@
+<!DOCTYPE html><html class="theme-next mist use-motion" lang=""><head>
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="You can check this post for some background. BangDream now use “on demand” delivery and I can get only arm64 blobs now. They are so different with old armv7 instrcutions so I have to rewrite some code">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Generating Proto File For Bangdream 4.0.0 (V2)">
+<meta property="og:url" content="http://dnaroma.github.io/2020/03/16/auto-gen-bang-proto-v2/index.html">
+<meta property="og:site_name" content="DNARoma">
+<meta property="og:description" content="You can check this post for some background. BangDream now use “on demand” delivery and I can get only arm64 blobs now. They are so different with old armv7 instrcutions so I have to rewrite some code">
+<meta property="article:published_time" content="2020-03-16T11:06:34.000Z">
+<meta property="article:modified_time" content="2020-03-16T11:06:34.225Z">
+<meta property="article:author" content="DNARoma">
+<meta property="article:tag" content="Bangdream">
+<meta property="article:tag" content="unity">
+<meta property="article:tag" content="il2cpp">
+<meta property="article:tag" content="protobuf">
+<meta property="article:tag" content="automation">
+<meta name="twitter:card" content="summary">
+
+
+  
+
+
+  <link rel="alternate" href="/rss2.xml" title="DNARoma" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://dnaroma.github.io/2020/03/16/auto-gen-bang-proto-v2/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Generating Proto File For Bangdream 4.0.0 (V2) | DNARoma</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125808664-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-125808664-1');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">DNARoma</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">DevOps's Blog</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://dnaroma.github.io/2020/03/16/auto-gen-bang-proto-v2/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="DNARoma">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DNARoma">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Generating Proto File For Bangdream 4.0.0 (V2)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2020-03-16 12:06:34" itemprop="dateCreated datePublished" datetime="2020-03-16T12:06:34+01:00">2020-03-16</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Hack/" itemprop="url" rel="index"><span itemprop="name">Hack</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>You can check <a href="/2018/09/15/auto-gen-bang-proto/">this post</a> for some background. BangDream now use “on demand” delivery and I can get only arm64 blobs now. They are so different with old armv7 instrcutions so I have to rewrite some code to get correct tag numbers.</p>
+<p>At first, use <strong>latest</strong> <code>il2cppdumper</code>, or you may have some errors when running the script. I tried immediately with my old script, and all tag numbers are reported <em>None</em>. It’s pretty annoying but it should have something to do with new instructions of arm64 (aarch64). Now let’s check what happend.</p>
+<h2 id="Disassembly"><a href="#Disassembly" class="headerlink" title="Disassembly"></a>Disassembly</h2><p>Like in armv7, protobuf-net codes are also compiled into two kinds of instructions. Use <code>UserAuthRequest</code> as an example. <code>userId</code> is compiled into:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">08 04 40 F9 E1 03 00 32 E2 03 1F AA 00 01 40 F9 6D 70 78 14</span><br></pre></td></tr></tbody></table></figure>
+
+<p>With a <a href="http://shell-storm.org/online/Online-Assembler-and-Disassembler/?opcodes=08+04+40+F9+E1+03+00+32+E2+03+1F+AA+00+01+40+F9+6D+70+78+14&arch=arm64&endianness=little&dis_with_addr=True&dis_with_raw=True&dis_with_ins=True#disassembly" target="_blank" rel="noopener">online disassembler</a> you can get following instructions:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0x0000000000000000:  08 04 40 F9    ldr x8, [x0, #8]</span><br><span class="line">0x0000000000000004:  E1 03 00 32    orr w1, wzr, #1</span><br><span class="line">0x0000000000000008:  E2 03 1F AA    mov x2, xzr</span><br><span class="line">0x000000000000000c:  00 01 40 F9    ldr x0, [x8]</span><br><span class="line">0x0000000000000010:  6D 70 78 14    b   #0x1e1c1c4</span><br></pre></td></tr></tbody></table></figure>
+
+<p>and <code>attestationErrorMsg</code> is encoded as:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">F3 0F 1E F8 FD 7B 01 A9 FD 43 00 91 08 04 40 F9 21 01 80 52 ...</span><br></pre></td></tr></tbody></table></figure>
+
+<p>and processed by <a href="http://shell-storm.org/online/Online-Assembler-and-Disassembler/?opcodes=F3+0F+1E+F8+FD+7B+01+A9+FD+43+00+91+08+04+40+F9+21+01+80+52&arch=arm64&endianness=little&dis_with_addr=True&dis_with_raw=True&dis_with_ins=True#disassembly" target="_blank" rel="noopener">disassembler</a>:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0x0000000000000000:  F3 0F 1E F8    str  x19, [sp, #-0x20]!</span><br><span class="line">0x0000000000000004:  FD 7B 01 A9    stp  x29, x30, [sp, #0x10]</span><br><span class="line">0x0000000000000008:  FD 43 00 91    add  x29, sp, #0x10</span><br><span class="line">0x000000000000000c:  08 04 40 F9    ldr  x8, [x0, #8]</span><br><span class="line">0x0000000000000010:  21 01 80 52    movz w1, #0x9</span><br></pre></td></tr></tbody></table></figure>
+
+<p>The most important instructions are:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">E1 03 00 32    orr w1, wzr, #1</span><br><span class="line"># or</span><br><span class="line">21 01 80 52    movz w1, #0x9</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Instruction-Encoding"><a href="#Instruction-Encoding" class="headerlink" title="Instruction Encoding"></a>Instruction Encoding</h2><p>But how are the immediate encoded? By checking the <a href="https://developer.arm.com/docs/ddi0487/latest/arm-architecture-reference-manual-armv8-for-armv8-a-architecture-profile" target="_blank" rel="noopener">reference</a> and the <a href="http://kitoslab-eng.blogspot.com/2012/10/armv8-aarch64-instruction-encoding.html" target="_blank" rel="noopener">instruction encoding</a> I figured out that <code>MOVZ</code> use direct immediate and <code>ORR</code> use bitmask immediate. Although they are aarch64 instructions, both of them use 32 bit immediate.</p>
+<p>The direct immediate is pretty <em>direct</em>, just read the immediate and it’s finished:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x10x 0010 1xxi iiii iiii iiii iiid dddd</span><br></pre></td></tr></tbody></table></figure>
+
+<p>But how about bitmask immediate? They are like the rotating encoding of immediate in armv7 but have some different. <code>ORR</code> immediate instruction looks like this:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x01x 0010 0Nii iiii iiii iinn nnnd dddd</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>N</code> together with first <em>x</em> (as known as <code>sf</code>) refers to bit length (<code>sf==0 AND N==0</code> => 32bit or <code>sf==1</code> => 64bit), first six binary digits of immediate are <code>immr</code> and last six binary digits of immediate are <code>imms</code>. You can find the code to decode bitmask immediate in the arm official reference:</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// DecodeBitMasks()</span></span><br><span class="line"><span class="comment">// ================</span></span><br><span class="line"><span class="comment">// Decode AArch64 bitfield and logical immediate masks which use a similar encoding structure</span></span><br><span class="line"></span><br><span class="line">(bits(M), bits(M)) DecodeBitMasks(bit immN, bits(<span class="number">6</span>) imms, bits(<span class="number">6</span>) immr, <span class="keyword">boolean</span> immediate)</span><br><span class="line">  bits(M) tmask, wmask;</span><br><span class="line">  bits(<span class="number">6</span>) levels;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Compute log2 of element size</span></span><br><span class="line">  <span class="comment">// 2^len must be in range [2, M]</span></span><br><span class="line">  len = HighestSetBit(immN:NOT(imms));</span><br><span class="line">  <span class="keyword">if</span> len < <span class="number">1</span> then UNDEFINED;</span><br><span class="line">  <span class="keyword">assert</span> M >= (<span class="number">1</span> << len);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Determine S, R and S - R parameters</span></span><br><span class="line">  levels = ZeroExtend(Ones(len), <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// For logical immediates an all-ones value of S is reserved</span></span><br><span class="line">  <span class="comment">// since it would generate a useless all-ones result (many times)</span></span><br><span class="line">  <span class="keyword">if</span> immediate && (imms AND levels) == levels then UNDEFINED;</span><br><span class="line"></span><br><span class="line">  S = UInt(imms AND levels);</span><br><span class="line">  R = UInt(immr AND levels);</span><br><span class="line">  diff = S - R; <span class="comment">// 6-bit subtract with borrow</span></span><br><span class="line">  esize = <span class="number">1</span> << len;</span><br><span class="line">  d = UInt(diff<len-<span class="number">1</len-<span></span>:<span class="number">0</span>>);<br><span class="line"></span><br><span class="line">  welem = ZeroExtend(Ones(S + <span class="number">1</span>), esize);</span><br><span class="line">  telem = ZeroExtend(Ones(d + <span class="number">1</span>), esize);</span><br><span class="line">  wmask = Replicate(ROR(welem, R));</span><br><span class="line">  tmask = Replicate(telem);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (wmask, tmask);</span><br></pre></td></tr></tbody></table></figure>
+
+<p>But it’s pretty hard to understand. <code>LLVM</code> gives <a href="https://github.com/llvm-mirror/llvm/blob/5c95b810cb3a7dee6d49c030363e5bf0bb41427e/lib/Target/AArch64/MCTargetDesc/AArch64AddressingModes.h#L292" target="_blank" rel="noopener">code</a> which is way more clear:</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">uint64_t</span> <span class="title">decodeLogicalImmediate</span><span class="params">(<span class="keyword">uint64_t</span> val, <span class="keyword">unsigned</span> regSize)</span> </span>{</span><br><span class="line">  <span class="comment">// Extract the N, imms, and immr fields.</span></span><br><span class="line">  <span class="keyword">unsigned</span> N = (val >> <span class="number">12</span>) & <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">unsigned</span> immr = (val >> <span class="number">6</span>) & <span class="number">0x3f</span>;</span><br><span class="line">  <span class="keyword">unsigned</span> imms = val & <span class="number">0x3f</span>;</span><br><span class="line"></span><br><span class="line">  assert((regSize == <span class="number">64</span> || N == <span class="number">0</span>) && <span class="string">"undefined logical immediate encoding"</span>);</span><br><span class="line">  <span class="keyword">int</span> len = <span class="number">31</span> - countLeadingZeros((N << <span class="number">6</span>) | (~imms & <span class="number">0x3f</span>));</span><br><span class="line">  assert(len >= <span class="number">0</span> && <span class="string">"undefined logical immediate encoding"</span>);</span><br><span class="line">  <span class="keyword">unsigned</span> <span class="built_in">size</span> = (<span class="number">1</span> << len);</span><br><span class="line">  <span class="keyword">unsigned</span> R = immr & (<span class="built_in">size</span> - <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">unsigned</span> S = imms & (<span class="built_in">size</span> - <span class="number">1</span>);</span><br><span class="line">  assert(S != <span class="built_in">size</span> - <span class="number">1</span> && <span class="string">"undefined logical immediate encoding"</span>);</span><br><span class="line">  <span class="keyword">uint64_t</span> pattern = (<span class="number">1U</span>LL << (S + <span class="number">1</span>)) - <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">unsigned</span> i = <span class="number">0</span>; i < R; ++i)</span><br><span class="line">    pattern = ror(pattern, <span class="built_in">size</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Replicate the pattern to fill the regSize.</span></span><br><span class="line">  <span class="keyword">while</span> (<span class="built_in">size</span> != regSize) {</span><br><span class="line">    pattern |= (pattern << <span class="built_in">size</span>);</span><br><span class="line">    <span class="built_in">size</span> *= <span class="number">2</span>;</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">return</span> pattern;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>OK we can now rewrite our code to get correct tag number.</p>
+<h2 id="New-getTag-Function"><a href="#New-getTag-Function" class="headerlink" title="New getTag Function"></a>New <code>getTag</code> Function</h2><p>Attention that in following code we use <strong>Little-Endian</strong>. In our case, <code>N</code> and <code>sf</code> always equal to 0 so we don’t have to care about length, it’s fixed to 32 bits.</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getTag</span><span class="params">(address)</span>:</span></span><br><span class="line">  offset = address & <span class="number">0xFFFFFFFF</span></span><br><span class="line"></span><br><span class="line">  prog.seek(offset)</span><br><span class="line">  inst = prog.read(<span class="number">4</span>)</span><br><span class="line">  inst = int.from_bytes(inst, byteorder=<span class="string">'little'</span>, signed=<span class="literal">False</span>)</span><br><span class="line">  <span class="keyword">if</span> inst == <span class="number">0xf9400408</span>:</span><br><span class="line">    prog.seek(offset + <span class="number">4</span>)</span><br><span class="line">    inst = int.from_bytes(prog.read(<span class="number">4</span>), <span class="string">'little'</span>, signed=<span class="literal">False</span>)</span><br><span class="line">  <span class="keyword">elif</span> inst == <span class="number">0xf81e0ff3</span>:</span><br><span class="line">    prog.seek(offset + <span class="number">16</span>)</span><br><span class="line">    inst = int.from_bytes(prog.read(<span class="number">4</span>), <span class="string">'little'</span>, signed=<span class="literal">False</span>)</span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    print(hex(inst), hex(address))</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">  <span class="keyword">if</span> inst >> <span class="number">24</span> == <span class="number">0x52</span>:</span><br><span class="line">    <span class="keyword">return</span> (inst >> <span class="number">5</span>) & <span class="number">0xFFFF</span></span><br><span class="line">  <span class="keyword">elif</span> inst >> <span class="number">24</span> == <span class="number">0x32</span>:</span><br><span class="line">    retnum = (inst >> <span class="number">8</span>) & <span class="number">0xFFFF</span></span><br><span class="line">    immr = (retnum >> <span class="number">8</span>) & <span class="number">0x3F</span></span><br><span class="line">    imms = (retnum >> <span class="number">2</span>) & <span class="number">0x3F</span></span><br><span class="line">    clz = <span class="keyword">lambda</span> x: <span class="string">"{:032b}"</span>.format(x).index(<span class="string">"1"</span>)</span><br><span class="line">    _len = <span class="number">31</span> - clz((<span class="number">0</span> << <span class="number">6</span>) | (~imms & <span class="number">0x3F</span>))</span><br><span class="line">    _size = <span class="number">1</span> << _len</span><br><span class="line">    R = immr & (_size - <span class="number">1</span>)</span><br><span class="line">    S = imms & (_size - <span class="number">1</span>)</span><br><span class="line">    ret = (<span class="number">1</span> << (S+<span class="number">1</span>)) - <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(immr):</span><br><span class="line">      ret = rotr(ret, <span class="number">32</span>)</span><br><span class="line">    <span class="keyword">return</span> ret</span><br></pre></td></tr></tbody></table></figure>
+
+<p>For whole code please see <a href="https://gist.github.com/dnaroma/1bfc901d95f777a340fcb615d6a96bd3#file-genproto_arm64-py" target="_blank" rel="noopener">this gist</a>.</p>
+<p>Happy hacking!</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Bangdream/" rel="tag"># Bangdream</a>
+          
+            <a href="/tags/unity/" rel="tag"># unity</a>
+          
+            <a href="/tags/il2cpp/" rel="tag"># il2cpp</a>
+          
+            <a href="/tags/protobuf/" rel="tag"># protobuf</a>
+          
+            <a href="/tags/automation/" rel="tag"># automation</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/08/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">DNARoma</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/%20%7C%7C%20archive">
+                
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/rss2.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/dnaroma" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Disassembly"><span class="nav-number">1.</span> <span class="nav-text">Disassembly</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Instruction-Encoding"><span class="nav-number">2.</span> <span class="nav-text">Instruction Encoding</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#New-getTag-Function"><span class="nav-number">3.</span> <span class="nav-text">New getTag Function</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">© <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DNARoma</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v4.2.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+<script type="text/javascript" charset="utf-8" src="/js/lazyload-plugin/lazyload.intersectionObserver.min.js"></script></body></html>
