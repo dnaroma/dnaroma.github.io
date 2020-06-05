@@ -11,7 +11,7 @@ date: 2018-09-15 14:04:21
 ---
 
 This post is encouraged by [esterTion's post](https://estertion.win/2018/04/bang-dream-proto%E7%9B%B8%E5%85%B3/). Before I only extract the proto file by hand, but it gives me a easy way to automation. For what is *proto file* and *protobuf*, please check [Google's documentation](https://developers.google.com/protocol-buffers/)
-
+<!--more-->
 ## Background
 Bangdream (Full name: BanG Dream! Girls Band Party!, Japanese: バンドリ！ ガールズバンドパーティ！) is a rhythm card game released by Bushiroad and developed by Craftegg with Unity. As of today, Unity is becoming more and more popular among game developers. In Unity 4.x.x, there's nearly no protection to C# source code. With [dnSpy](https://github.com/0xd4d/dnSpy) or [ILSpy](https://github.com/icsharpcode/ILSpy) it's very easy to read the code or do some hack.
 

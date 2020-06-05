@@ -14,7 +14,7 @@ date: 2020-03-16 12:06:34
 You can check [this post](/2018/09/15/auto-gen-bang-proto/) for some background. BangDream now use "on demand" delivery and I can get only arm64 blobs now. They are so different with old armv7 instrcutions so I have to rewrite some code to get correct tag numbers.
 
 At first, use **latest** `il2cppdumper`, or you may have some errors when running the script. I tried immediately with my old script, and all tag numbers are reported *None*. It's pretty annoying but it should have something to do with new instructions of arm64 (aarch64). Now let's check what happend.
-
+<!--more-->
 ## Disassembly
 
 Like in armv7, protobuf-net codes are also compiled into two kinds of instructions. Use `UserAuthRequest` as an example. `userId` is compiled into:

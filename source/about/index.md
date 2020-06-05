@@ -12,5 +12,5 @@ I am a developer, focused on Javascript (Browser, Node.js, Typescript), Python a
 ### Social
 
 - [GitHub](https://github.com/dnaroma)
-- [Blog](https://dnaroma.site)
-- [Twitter](https://twitter.com/zuradev)
+- [Blog](https://blog.dnaroma.eu)
+- [Twitter](https://twitter.com/miku_zura)
