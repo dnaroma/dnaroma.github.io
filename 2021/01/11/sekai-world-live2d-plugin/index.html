@@ -18,24 +18,21 @@
     var CONFIG = {"hostname":"blog.dnaroma.eu","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="This post is encouraged by esterTion’s post. Before I only extract the proto file by hand, but it gives me a easy way to automation. For what is proto file and protobuf, please check Google’s document">
+  <meta name="description" content="TL;DRRecently, Sekai Viewer released the Live2D Viewer function. I forked a plugin package called find-live2d3, did some modification and renamed to @sekai-world/find-live2d-v3. Release of my package">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Generating Proto File For Bangdream">
-<meta property="og:url" content="https://blog.dnaroma.eu/2018/09/15/auto-gen-bang-proto/index.html">
+<meta property="og:title" content="Sekai World releases its Live2D plugin">
+<meta property="og:url" content="https://blog.dnaroma.eu/2021/01/11/sekai-world-live2d-plugin/index.html">
 <meta property="og:site_name" content="DNARoma's DevOps Blog">
-<meta property="og:description" content="This post is encouraged by esterTion’s post. Before I only extract the proto file by hand, but it gives me a easy way to automation. For what is proto file and protobuf, please check Google’s document">
+<meta property="og:description" content="TL;DRRecently, Sekai Viewer released the Live2D Viewer function. I forked a plugin package called find-live2d3, did some modification and renamed to @sekai-world/find-live2d-v3. Release of my package">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2018-09-15T12:04:21.000Z">
-<meta property="article:modified_time" content="2020-11-11T23:26:04.707Z">
+<meta property="article:published_time" content="2021-01-11T21:52:43.000Z">
+<meta property="article:modified_time" content="2021-01-11T21:52:43.107Z">
 <meta property="article:author" content="DNARoma">
-<meta property="article:tag" content="Bandori">
-<meta property="article:tag" content="unity">
-<meta property="article:tag" content="il2cpp">
-<meta property="article:tag" content="protobuf">
-<meta property="article:tag" content="automation">
+<meta property="article:tag" content="Project Sekai">
+<meta property="article:tag" content="Live2D">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://blog.dnaroma.eu/2018/09/15/auto-gen-bang-proto/">
+<link rel="canonical" href="https://blog.dnaroma.eu/2021/01/11/sekai-world-live2d-plugin/">
 
 
 <script id="page-configurations">
@@ -48,7 +45,7 @@
   };
 </script>
 
-  <title>Generating Proto File For Bangdream | DNARoma's DevOps Blog</title>
+  <title>Sekai World releases its Live2D plugin | DNARoma's DevOps Blog</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-125808664-1"></script>
     <script>
@@ -178,7 +175,7 @@
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://blog.dnaroma.eu/2018/09/15/auto-gen-bang-proto/">
+    <link itemprop="mainEntityOfPage" href="https://blog.dnaroma.eu/2021/01/11/sekai-world-live2d-plugin/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -191,7 +188,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Generating Proto File For Bangdream
+          Sekai World releases its Live2D plugin
         </h1>
 
         <div class="post-meta">
@@ -201,22 +198,15 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2018-09-15 14:04:21" itemprop="dateCreated datePublished" datetime="2018-09-15T14:04:21+02:00">2018-09-15</time>
+              <time title="Created: 2021-01-11 22:52:43" itemprop="dateCreated datePublished" datetime="2021-01-11T22:52:43+01:00">2021-01-11</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-11-12 00:26:04" itemprop="dateModified" datetime="2020-11-12T00:26:04+01:00">2020-11-12</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hack/" itemprop="url" rel="index"><span itemprop="name">Hack</span></a>
+                  <a href="/categories/Website/" itemprop="url" rel="index"><span itemprop="name">Website</span></a>
                 </span>
             </span>
 
@@ -236,8 +226,8 @@
       </span>
       <span class="post-meta-item-text">Disqus: </span>
     
-    <a title="disqus" href="/2018/09/15/auto-gen-bang-proto/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/09/15/auto-gen-bang-proto/" itemprop="commentCount"></span>
+    <a title="disqus" href="/2021/01/11/sekai-world-live2d-plugin/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/01/11/sekai-world-live2d-plugin/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -252,28 +242,28 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>This post is encouraged by <a href="https://estertion.win/2018/04/bang-dream-proto%E7%9B%B8%E5%85%B3/" target="_blank" rel="noopener">esterTion’s post</a>. Before I only extract the proto file by hand, but it gives me a easy way to automation. For what is <em>proto file</em> and <em>protobuf</em>, please check <a href="https://developers.google.com/protocol-buffers/" target="_blank" rel="noopener">Google’s documentation</a></p>
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><p>Recently, Sekai Viewer released the Live2D Viewer function. I forked a plugin package called <a href="https://www.npmjs.com/package/find-live2d3" target="_blank" rel="noopener">find-live2d3</a>, did some modification and renamed to <a href="https://www.npmjs.com/package/@sekai-world/find-live2d-v3" target="_blank" rel="noopener">@sekai-world/find-live2d-v3</a>. Release of my package can be found on <a href="https://www.npmjs.com/package/@sekai-world/find-live2d-v3" target="_blank" rel="noopener">npmjs</a> and <a href="https://github.com/Sekai-World/find-live2d-v3" target="_blank" rel="noopener">GitHub</a>.</p>
 <a id="more"></a>
-<h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>Bangdream (Full name: BanG Dream! Girls Band Party!, Japanese: バンドリ！ ガールズバンドパーティ！) is a rhythm card game released by Bushiroad and developed by Craftegg with Unity. As of today, Unity is becoming more and more popular among game developers. In Unity 4.x.x, there’s nearly no protection to C# source code. With <a href="https://github.com/0xd4d/dnSpy" target="_blank" rel="noopener">dnSpy</a> or <a href="https://github.com/icsharpcode/ILSpy" target="_blank" rel="noopener">ILSpy</a> it’s very easy to read the code or do some hack.</p>
-<p>From Unity 5, a method called “il2cpp” is applied to convert C# bytecode (IL) to native code. If target is Android, a <code>libil2cpp.so</code> can be found under <code>lib</code> directory. Thanks to Perfare’s amazing tool <a href="https://github.com/Perfare/Il2CppDumper" target="_blank" rel="noopener">Il2CppDumper</a>, reading the code is as easy as before.</p>
-<p>Il2CppDumper will generate some files, if you don’t want to read source code with IDA, then just get the <code>dump.cs</code> which includes all classes, methods and variables. For game like Bangdream, you can get rich infomations from this file, like AES key and protobuf definitions. I think Craftegg want to avoid unnecessary files, so they use <em>protobuf-net</em> to write protobuf definitions in C# code.</p>
-<h2 id="Analyse"><a href="#Analyse" class="headerlink" title="Analyse"></a>Analyse</h2><p>The method name in <code>dump.cs</code> are very reasonable. The protobuf definition is always stored in class like “GetResponse” or “PostRequest” prefixed by API path. So “SuiteMasterGetResponse” is the class storing the protobuf definition of game master data (or game database). By reading the <a href="https://estertion.win/2018/04/bang-dream-proto%E7%9B%B8%E5%85%B3/" target="_blank" rel="noopener">esterTion’s post</a> and <a href="https://gist.github.com/esterTion/768c646a83a089af9e5fbb83b77a59fc" target="_blank" rel="noopener">gist code</a>, it seems not hard to extract proto file from the protobuf definition in il2cpp file. The only problem is how to get the Tag number, which can only be found in binary file.</p>
-<h3 id="Read-and-rewrite-code"><a href="#Read-and-rewrite-code" class="headerlink" title="Read and rewrite code"></a>Read and rewrite code</h3><p>The original code of esterTion is written in PHP. Firstly it read the <code>dump.cs</code> and extract the basic structure of protobuf then generate the valid “proto2” file. The best parts are the regular expressions extracting the class body and ProtoMemberAttribute (=proto message member), but sadly it can only run in PCRE system (like PHP). In Python some grammar is invalid (subroutine and atomic group), it spent me hours to constructure working regex for Python.</p>
-<p>Now I get the proto file but with all Tags as hex address. The original <code>getTag</code> method is not working. Is the original code wrong? Probably not. esterTion seems to use the Mach-O binary, which has the different code from Android library. It needs some adjustments.</p>
-<h3 id="Get-the-right-Tag"><a href="#Get-the-right-Tag" class="headerlink" title="Get the right Tag"></a>Get the right Tag</h3><p>Let’s open the <code>libil2cpp.so</code> with <a href="https://hexed.it/" target="_blank" rel="noopener">hex code editor</a> and jump to the address. The hex code for members is like: <code>04 00 90 E5 01 10 A0 E3 ... 04 00 90 E5 02 10 A0 E3 ....</code> One member begins with <code>04 00 90 E5</code>, and the following number keeps changing. Do a verfication and you can find that this is exactly the Tag number you want. Notice that the number is stored in 12 bits, so do not only extract one byte.</p>
-<p>But it’s only one type. Another type begins with <code>10 4C 2D E9</code>, the Tag number is 12 bytes away. So replace the original <code>getTag</code> code with this:</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Only for Python 3</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getTag</span><span class="params">(address)</span>:</span></span><br><span class="line">  offset = address & <span class="number">0xFFFFFFFF</span></span><br><span class="line"></span><br><span class="line">  prog.seek(offset)</span><br><span class="line">  inst = prog.read(<span class="number">4</span>)</span><br><span class="line">  inst = int.from_bytes(inst, byteorder=<span class="string">'little'</span>, signed=<span class="literal">False</span>)</span><br><span class="line">  <span class="keyword">if</span> inst == <span class="number">0xe5900004</span>: <span class="comment"># caution! little-endian</span></span><br><span class="line">    prog.seek(offset + <span class="number">4</span>)</span><br><span class="line">    <span class="keyword">return</span> int.from_bytes(prog.read(<span class="number">2</span>), <span class="string">'little'</span>, signed=<span class="literal">False</span>) & <span class="number">0xfff</span></span><br><span class="line">  <span class="keyword">elif</span> inst == <span class="number">0xe92d4c10</span>: <span class="comment"># caution! little-endian</span></span><br><span class="line">    prog.seek(offset + <span class="number">12</span>)</span><br><span class="line">    <span class="keyword">return</span> int.from_bytes(prog.read(<span class="number">2</span>), <span class="string">'little'</span>, signed=<span class="literal">False</span>) & <span class="number">0xfff</span></span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    print(hex(inst), hex(address))</span><br></pre></td></tr></tbody></table></figure>
 
-<blockquote>
-<p>A small problem: the Tag number 300(0x12c) is stored as 3915(0xf4b). Can’t figure out the reason and made a hardcoding.</p>
+<h2 id="What-is-Live2D"><a href="#What-is-Live2D" class="headerlink" title="What is Live2D?"></a>What is Live2D?</h2><blockquote>
+<p>Live2D is a software technology that allows you to create dynamic expressions that breathe life into an original 2D illustration.<br>Live2D is a technique of generating animated 2D graphics, usually anime-style characters, using layered, continuous parts based on a single illustration, without the need of animating frame-by-frame or creating a 3D model.<br><a href="https://www.live2d.com/en/about/" target="_blank" rel="noopener">What is Live2D? | Live2D Cubism</a></p>
 </blockquote>
-<h2 id="Proto-supports-map"><a href="#Proto-supports-map" class="headerlink" title="Proto supports map"></a>Proto supports map</h2><p>Proto files now supports map definition, but it will be compiled to a array structure with objects referring the map key and value. For example, the following protos is equivalent:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">message test {</span><br><span class="line">  map<uint32, string=""> entries = 1;</uint32,></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">message testEntry {</span><br><span class="line">  required uint32 key = 1;</span><br><span class="line">  required string value = 2;</span><br><span class="line">}</span><br><span class="line">message test {</span><br><span class="line">  repeated testEntry entries = 1;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<p>The original code only supports the second one. The protobuf for Python supports to generate map structure from the first definition. So the first one is optimal for me. Some changes were made to generate the beautiful map definition.</p>
-<h2 id="Final-words"><a href="#Final-words" class="headerlink" title="Final words"></a>Final words</h2><p>You can find the gist code <a href="https://gist.github.com/dnaroma/1bfc901d95f777a340fcb615d6a96bd3" target="_blank" rel="noopener">here</a>. I’ve tested the generated proto file, it fits the game master data. It’s time to say goodbye to manual writting proto file.</p>
+<h2 id="Live2D-in-Project-Sekai"><a href="#Live2D-in-Project-Sekai" class="headerlink" title="Live2D in Project Sekai"></a>Live2D in Project Sekai</h2><p>Project Sekai use Cubism 3.3 to make the Live2D models. As Cubism promised, all Cubism Live2D SDK version 3+ has backward compatibility. Although the only one <a href="https://www.live2d.com/en/download/cubism-sdk/download-web/" target="_blank" rel="noopener">downloadable SDK</a> is version 4.0, it works well with models from 3.3.</p>
+<p>But not like other unity games which also use Live2D, Colorful Palette made some modification on that. To extract the Live2D models from Project Sekai asset bundles, I tried Perfare’s <a href="https://github.com/Perfare/UnityLive2DExtractor" target="_blank" rel="noopener">UnityLive2DExtractor</a> at first, unfortunately it doesn’t work. Then I realized a painful fact: I have to extract motions and expression from the bundle files by myself.</p>
+<p>Then I dived into the code of unity live2d extractor to figure out how it works. I believe those code is helpful cause it works with many other games. After that I made it clear how to reconstruct motion json files, I wrote some python code and amazingly they worked! But one big problem is still blocking my way: the field <code>Parameter</code> is a number, not a string, and I don’t know what it means. In other games, Live2D motion bundle has a unity <code>GameObject</code> component in it, it doesn’t appear in the files of Project Sekai. Colorful Palette either hide the <code>GameObject</code> somewhere in other asset bundles, or use another way to determine the <code>Parameter</code> field.</p>
+<p>After a lot of reasearch (which costs me about two days), I found some clue from <a href="https://github.com/Live2D/CubismUnityComponents/tree/develop/Assets/Live2D/Cubism/Samples/Models" target="_blank" rel="noopener">Cubism Live2D Unity examples</a>. From Perfare’s code I knew that the <code>Parameter</code> number is crc32 computed from some strings (usually from <code>GameObject</code>), but I’m not sure how was the strings composed. I did some tests and found that I just missed some prefix of the strings. However, I still didn’t know which parameters are available for those motion files.</p>
+<p>I took a look at Cubism Live2D Web SDK, it contains a <code>core</code> module which can decode the moc3 files and read out parameter list. This module is compiled from c/c++ code through EMscripten into js code. I’m not here to decode the machine code, so with my last hope I opened the moc3 file in hex editor. I felt lucky because the structure of parameters in moc3 file is pretty simple. In the start of moc3 file it has some chunks like offset table, telling the offset of each part. The position of parameter table in the offset table is constant, therefore I can read same position to get the offset of parameter table. The parameter table consists of a lot of strings indicating the name of parameter. Tada, I’m on the right way.</p>
+<p>I add some simple code to my python module and most of the parameters are recovered. After some smoke test of my extracted motion jsons I can finally step further.</p>
+<h2 id="Implement-Live2D-in-React"><a href="#Implement-Live2D-in-React" class="headerlink" title="Implement Live2D in React"></a>Implement Live2D in React</h2><p>I have to say, Cubism has a very shitty documentation support for the WebGL SDK. Luckily they wrote a good production-ready working example of the SDK, but it still doesn’t meet my need. After searching on npmjs, I found a package called <a href="https://www.npmjs.com/package/find-live2d3" target="_blank" rel="noopener">find-live2d3</a>. It’s really amazing, transformed the official example into a plugin package which can be used out-of-box. I use this package as a good start.</p>
+<p>This package did not provide a GitHub repo address, so I installed it locally and copied everything from <code>node_modules</code> folder. I have to modify this package because:</p>
+<ul>
+<li>The original package did not allow me to specify a canvas container, it creates a full screen container by default.</li>
+<li>The model jsons of Project Sekai does not contain motions and expressions, I have to load them in another way.</li>
+<li>It uses outdated <code>core</code> and <code>framework</code>, which breaks the display of Project Sekai models. I have to update and patch them again.</li>
+</ul>
+<p>Therefore I added <code>el</code> argument to initialize function to allow me give my custom canvas container element. I also added a <code>loadMotions</code> function to model instance which allows me to load motions after loading the model.</p>
+<p>To help others who may also need a plugin package of Live2D, I make it open source. The documentation is not done, I suggest you to read the code.</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>As my other datamining work, I learned some <em>useless</em> knowledge again. I figured out how to read moc3 file, how to reconstruct the motion json from <code>AnimateClip</code> of unity Live2D bundle and how to decode the <code>Parameter</code> field of unity Live2D bundle. Furthermore, during the implementation of Live2D Viewer, I knew how to resize a canvas upon window resizing, how to save image in WebGL context. And I do test two models showing at once, it would help the development of Live2D Story Reader.</p>
 
     </div>
 
@@ -283,11 +273,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Bandori/" rel="tag"># Bandori</a>
-              <a href="/tags/unity/" rel="tag"># unity</a>
-              <a href="/tags/il2cpp/" rel="tag"># il2cpp</a>
-              <a href="/tags/protobuf/" rel="tag"># protobuf</a>
-              <a href="/tags/automation/" rel="tag"># automation</a>
+              <a href="/tags/Project-Sekai/" rel="tag"># Project Sekai</a>
+              <a href="/tags/Live2D/" rel="tag"># Live2D</a>
           </div>
 
         
@@ -295,11 +282,11 @@
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2020/03/16/auto-gen-bang-proto-v2/" rel="next" title="Generating Proto File For Bangdream 4.0.0 (V2)">
-      Generating Proto File For Bangdream 4.0.0 (V2) <i class="fa fa-chevron-right"></i>
+    <a href="/2020/09/08/analyse-project-sekai-trial-version-md/" rel="prev" title="Project Sekai 试玩版分析">
+      <i class="fa fa-chevron-left"></i> Project Sekai 试玩版分析
     </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -365,7 +352,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Background"><span class="nav-number">1.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Analyse"><span class="nav-number">2.</span> <span class="nav-text">Analyse</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Read-and-rewrite-code"><span class="nav-number">2.1.</span> <span class="nav-text">Read and rewrite code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Get-the-right-Tag"><span class="nav-number">2.2.</span> <span class="nav-text">Get the right Tag</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Proto-supports-map"><span class="nav-number">3.</span> <span class="nav-text">Proto supports map</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Final-words"><span class="nav-number">4.</span> <span class="nav-text">Final words</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-Live2D"><span class="nav-number">2.</span> <span class="nav-text">What is Live2D?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Live2D-in-Project-Sekai"><span class="nav-number">3.</span> <span class="nav-text">Live2D in Project Sekai</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implement-Live2D-in-React"><span class="nav-number">4.</span> <span class="nav-text">Implement Live2D in React</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-number">5.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -570,9 +557,9 @@
 </script>
 <script>
   var disqus_config = function() {
-    this.page.url = "https://blog.dnaroma.eu/2018/09/15/auto-gen-bang-proto/";
-    this.page.identifier = "2018/09/15/auto-gen-bang-proto/";
-    this.page.title = "Generating Proto File For Bangdream";
+    this.page.url = "https://blog.dnaroma.eu/2021/01/11/sekai-world-live2d-plugin/";
+    this.page.identifier = "2021/01/11/sekai-world-live2d-plugin/";
+    this.page.title = "Sekai World releases its Live2D plugin";
     };
   NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
     if (window.DISQUS) {
