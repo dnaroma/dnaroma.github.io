@@ -1,0 +1,540 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.dna.moe","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":{"disqus":{"text":"Load Disqus","order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="TL;DRRecently, Sekai Viewer released the Live2D Viewer function. I forked a plugin package called find-live2d3, did some modification and renamed to @sekai-world/find-live2d-v3. Release of my pac">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sekai World releases its Live2D plugin">
+<meta property="og:url" content="https://blog.dna.moe/2021/01/11/sekai-world-live2d-plugin/index.html">
+<meta property="og:site_name" content="DNARoma's DevOps Blog">
+<meta property="og:description" content="TL;DRRecently, Sekai Viewer released the Live2D Viewer function. I forked a plugin package called find-live2d3, did some modification and renamed to @sekai-world/find-live2d-v3. Release of my pac">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-01-11T21:52:43.000Z">
+<meta property="article:modified_time" content="2022-07-17T20:03:32.693Z">
+<meta property="article:author" content="DNARoma">
+<meta property="article:tag" content="Project Sekai">
+<meta property="article:tag" content="Live2D">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://blog.dna.moe/2021/01/11/sekai-world-live2d-plugin/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Sekai World releases its Live2D plugin | DNARoma's DevOps Blog</title>
+  
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-125808664-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-125808664-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="DNARoma's DevOps Blog" type="application/rss+xml">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">DNARoma's DevOps Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">DevOps Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-fa fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-fa fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-fa fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-fa fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-fa fa-th"></i>Categories</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://blog.dna.moe/2021/01/11/sekai-world-live2d-plugin/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DNARoma">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DNARoma's DevOps Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Sekai World releases its Live2D plugin
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-01-11 22:52:43" itemprop="dateCreated datePublished" datetime="2021-01-11T22:52:43+01:00">2021-01-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-07-17 22:03:32" itemprop="dateModified" datetime="2022-07-17T22:03:32+02:00">2022-07-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Website/" itemprop="url" rel="index"><span itemprop="name">Website</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-users"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="firestore-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><p>Recently, Sekai Viewer released the Live2D Viewer function. I forked a plugin package called <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/find-live2d3">find-live2d3</a>, did some modification and renamed to <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@sekai-world/find-live2d-v3">@sekai-world/find-live2d-v3</a>. Release of my package can be found on <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@sekai-world/find-live2d-v3">npmjs</a> and <a target="_blank" rel="noopener" href="https://github.com/Sekai-World/find-live2d-v3">GitHub</a>.</p>
+<span id="more"></span>
+
+<h2 id="What-is-Live2D"><a href="#What-is-Live2D" class="headerlink" title="What is Live2D?"></a>What is Live2D?</h2><blockquote>
+<p>Live2D is a software technology that allows you to create dynamic expressions that breathe life into an original 2D illustration.<br>Live2D is a technique of generating animated 2D graphics, usually anime-style characters, using layered, continuous parts based on a single illustration, without the need of animating frame-by-frame or creating a 3D model.<br><a target="_blank" rel="noopener" href="https://www.live2d.com/en/about/">What is Live2D? | Live2D Cubism</a></p>
+</blockquote>
+<h2 id="Live2D-in-Project-Sekai"><a href="#Live2D-in-Project-Sekai" class="headerlink" title="Live2D in Project Sekai"></a>Live2D in Project Sekai</h2><p>Project Sekai use Cubism 3.3 to make the Live2D models. As Cubism promised, all Cubism Live2D SDK version 3+ has backward compatibility. Although the only one <a target="_blank" rel="noopener" href="https://www.live2d.com/en/download/cubism-sdk/download-web/">downloadable SDK</a> is version 4.0, it works well with models from 3.3.</p>
+<p>But not like other unity games which also use Live2D, Colorful Palette made some modification on that. To extract the Live2D models from Project Sekai asset bundles, I tried Perfare’s <a target="_blank" rel="noopener" href="https://github.com/Perfare/UnityLive2DExtractor">UnityLive2DExtractor</a> at first, unfortunately it doesn’t work. Then I realized a painful fact: I have to extract motions and expression from the bundle files by myself.</p>
+<p>Then I dived into the code of unity live2d extractor to figure out how it works. I believe those code is helpful cause it works with many other games. After that I made it clear how to reconstruct motion json files, I wrote some python code and amazingly they worked! But one big problem is still blocking my way: the field <code>Parameter</code> is a number, not a string, and I don’t know what it means. In other games, Live2D motion bundle has a unity <code>GameObject</code> component in it, it doesn’t appear in the files of Project Sekai. Colorful Palette either hide the <code>GameObject</code> somewhere in other asset bundles, or use another way to determine the <code>Parameter</code> field.</p>
+<p>After a lot of reasearch (which costs me about two days), I found some clue from <a target="_blank" rel="noopener" href="https://github.com/Live2D/CubismUnityComponents/tree/develop/Assets/Live2D/Cubism/Samples/Models">Cubism Live2D Unity examples</a>. From Perfare’s code I knew that the <code>Parameter</code> number is crc32 computed from some strings (usually from <code>GameObject</code>), but I’m not sure how was the strings composed. I did some tests and found that I just missed some prefix of the strings. However, I still didn’t know which parameters are available for those motion files.</p>
+<p>I took a look at Cubism Live2D Web SDK, it contains a <code>core</code> module which can decode the moc3 files and read out parameter list. This module is compiled from c/c++ code through EMscripten into js code. I’m not here to decode the machine code, so with my last hope I opened the moc3 file in hex editor. I felt lucky because the structure of parameters in moc3 file is pretty simple. In the start of moc3 file it has some chunks like offset table, telling the offset of each part. The position of parameter table in the offset table is constant, therefore I can read same position to get the offset of parameter table. The parameter table consists of a lot of strings indicating the name of parameter. Tada, I’m on the right way.</p>
+<p>I add some simple code to my python module and most of the parameters are recovered. After some smoke test of my extracted motion jsons I can finally step further.</p>
+<h2 id="Implement-Live2D-in-React"><a href="#Implement-Live2D-in-React" class="headerlink" title="Implement Live2D in React"></a>Implement Live2D in React</h2><p>I have to say, Cubism has a very shitty documentation support for the WebGL SDK. Luckily they wrote a good production-ready working example of the SDK, but it still doesn’t meet my need. After searching on npmjs, I found a package called <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/find-live2d3">find-live2d3</a>. It’s really amazing, transformed the official example into a plugin package which can be used out-of-box. I use this package as a good start.</p>
+<p>This package did not provide a GitHub repo address, so I installed it locally and copied everything from <code>node_modules</code> folder. I have to modify this package because:</p>
+<ul>
+<li>The original package did not allow me to specify a canvas container, it creates a full screen container by default.</li>
+<li>The model jsons of Project Sekai does not contain motions and expressions, I have to load them in another way.</li>
+<li>It uses outdated <code>core</code> and <code>framework</code>, which breaks the display of Project Sekai models. I have to update and patch them again.</li>
+</ul>
+<p>Therefore I added <code>el</code> argument to initialize function to allow me give my custom canvas container element. I also added a <code>loadMotions</code> function to model instance which allows me to load motions after loading the model.</p>
+<p>To help others who may also need a plugin package of Live2D, I make it open source. The documentation is not done, I suggest you to read the code.</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>As my other datamining work, I learned some <em>useless</em> knowledge again. I figured out how to read moc3 file, how to reconstruct the motion json from <code>AnimateClip</code> of unity Live2D bundle and how to decode the <code>Parameter</code> field of unity Live2D bundle. Furthermore, during the implementation of Live2D Viewer, I knew how to resize a canvas upon window resizing, how to save image in WebGL context. And I do test two models showing at once, it would help the development of Live2D Story Reader.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Project-Sekai/" rel="tag"># Project Sekai</a>
+              <a href="/tags/Live2D/" rel="tag"># Live2D</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/08/analyse-project-sekai-trial-version-md/" rel="prev" title="Project Sekai 试玩版分析">
+      <i class="fa fa-chevron-left"></i> Project Sekai 试玩版分析
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/10/01/sekai-viewer-first-anniversary/" rel="next" title="Sekai Viewer's first anniversary">
+      Sekai Viewer's first anniversary <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-Live2D"><span class="nav-number">2.</span> <span class="nav-text">What is Live2D?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Live2D-in-Project-Sekai"><span class="nav-number">3.</span> <span class="nav-text">Live2D in Project Sekai</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implement-Live2D-in-React"><span class="nav-number">4.</span> <span class="nav-text">Implement Live2D in React</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-number">5.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DNARoma</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dnaroma" title="GitHub → https://github.com/dnaroma" rel="noopener" target="_blank"><i class="fa fa-fw fa-fab fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/miku_zura" title="Twitter → https://twitter.com/miku_zura" rel="noopener" target="_blank"><i class="fa fa-fw fa-fab fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  © 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DNARoma</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> &amp; <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+  <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-firestore.js"></script>
+  <script>
+    firebase.initializeApp({
+      apiKey   : 'AIzaSyAxg9X6LQL6grs3LcdJxkuwrGEFSRHm3UM',
+      projectId: 'myblog-9dbda'
+    });
+
+    function getCount(doc, increaseCount) {
+      // IncreaseCount will be false when not in article page
+      return doc.get().then(d => {
+        var count = 0;
+        if (!d.exists) { // Has no data, initialize count
+          if (increaseCount) {
+            doc.set({
+              count: 1
+            });
+            count = 1;
+          }
+        } else { // Has data
+          count = d.data().count;
+          if (increaseCount) {
+            // If first view this article
+            doc.set({ // Increase count
+              count: count + 1
+            });
+            count++;
+          }
+        }
+
+        return count;
+      });
+    }
+
+    function appendCountTo(el) {
+      return count => {
+        el.innerText = count;
+      }
+    }
+  </script>
+  <script>
+    (function() {
+      var db = firebase.firestore();
+      var articles = db.collection('articles');
+
+      if (CONFIG.page.isPost) { // Is article page
+        var title = document.querySelector('.post-title').innerText.trim();
+        var doc = articles.doc(title);
+        var increaseCount = CONFIG.hostname === location.hostname;
+        if (localStorage.getItem(title)) {
+          increaseCount = false;
+        } else {
+          // Mark as visited
+          localStorage.setItem(title, true);
+        }
+        getCount(doc, increaseCount).then(appendCountTo(document.querySelector('.firestore-visitors-count')));
+      } else if (CONFIG.page.isHome) { // Is index page
+        var promises = [...document.querySelectorAll('.post-title')].map(element => {
+          var title = element.innerText.trim();
+          var doc = articles.doc(title);
+          return getCount(doc);
+        });
+        Promise.all(promises).then(counts => {
+          var metas = document.querySelectorAll('.firestore-visitors-count');
+          counts.forEach((val, idx) => {
+            appendCountTo(metas[idx])(val);
+          });
+        });
+      }
+    })();
+  </script>
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script type="text/javascript" charset="utf-8" src="/js/lazyload-plugin/lazyload.intersectionObserver.min.js"></script></body></html>

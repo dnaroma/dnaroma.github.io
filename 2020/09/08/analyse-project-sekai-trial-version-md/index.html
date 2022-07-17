@@ -1,0 +1,535 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.dna.moe","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":{"disqus":{"text":"Load Disqus","order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="世嘉出的新的V家相关游戏Project Sekai终于出了一个试玩版，也展示了一下世嘉谱师的实力（火花的Master难度吓死人）。整个游戏的音游部分比较类似于世嘉自家的街机音游Chunithm，音符可以跨多个轨道，只要点中其中覆盖的任意轨道就可以得分。由于本游戏和Bandori游戏的开发商都是Craft Egg，可以预见到这就是邦邦换皮游戏，而对游戏的分析也证实了这一点。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Project Sekai 试玩版分析">
+<meta property="og:url" content="https://blog.dna.moe/2020/09/08/analyse-project-sekai-trial-version-md/index.html">
+<meta property="og:site_name" content="DNARoma's DevOps Blog">
+<meta property="og:description" content="世嘉出的新的V家相关游戏Project Sekai终于出了一个试玩版，也展示了一下世嘉谱师的实力（火花的Master难度吓死人）。整个游戏的音游部分比较类似于世嘉自家的街机音游Chunithm，音符可以跨多个轨道，只要点中其中覆盖的任意轨道就可以得分。由于本游戏和Bandori游戏的开发商都是Craft Egg，可以预见到这就是邦邦换皮游戏，而对游戏的分析也证实了这一点。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-09-08T21:05:08.000Z">
+<meta property="article:modified_time" content="2022-07-17T20:03:32.692Z">
+<meta property="article:author" content="DNARoma">
+<meta property="article:tag" content="Project Sekai">
+<meta property="article:tag" content="unity">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://blog.dna.moe/2020/09/08/analyse-project-sekai-trial-version-md/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Project Sekai 试玩版分析 | DNARoma's DevOps Blog</title>
+  
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-125808664-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-125808664-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="DNARoma's DevOps Blog" type="application/rss+xml">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">DNARoma's DevOps Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">DevOps Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-fa fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-fa fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-fa fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-fa fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-fa fa-th"></i>Categories</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://blog.dna.moe/2020/09/08/analyse-project-sekai-trial-version-md/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DNARoma">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DNARoma's DevOps Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Project Sekai 试玩版分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-08 23:05:08" itemprop="dateCreated datePublished" datetime="2020-09-08T23:05:08+02:00">2020-09-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-07-17 22:03:32" itemprop="dateModified" datetime="2022-07-17T22:03:32+02:00">2022-07-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hack/" itemprop="url" rel="index"><span itemprop="name">Hack</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-users"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="firestore-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>世嘉出的新的V家相关游戏<code>Project Sekai</code>终于出了一个试玩版，也展示了一下世嘉谱师的实力（火花的Master难度吓死人）。整个游戏的音游部分比较类似于世嘉自家的街机音游<code>Chunithm</code>，音符可以跨多个轨道，只要点中其中覆盖的任意轨道就可以得分。由于本游戏和<code>Bandori</code>游戏的开发商都是<a target="_blank" rel="noopener" href="https://www.craftegg.co.jp/">Craft Egg</a>，可以预见到这就是邦邦换皮游戏，而对游戏的分析也证实了这一点。</p>
+<span id="more"></span>
+<h2 id="游戏介绍"><a href="#游戏介绍" class="headerlink" title="游戏介绍"></a>游戏介绍</h2><blockquote><p>《世界计画彩色舞台feat. 初音未来》主要以现实世界中位于日本涩谷附近的地区作为舞台，在这里的初音未来等人与我们在现实世界中对他们的认知相同，作为虚拟歌手演唱着许多创作者们所创作的歌曲；而另一个舞台「世界（SEKAI）」是个从思念所诞生出来的场所，同时在这边也将创造出许多歌曲，本作的主角之一「星乃一歌」在因缘际会下来到了「世界」，并在这里与初音相遇。</p>
+<footer><strong>萌娘百科</strong><cite><a target="_blank" rel="noopener" href="https://zh.moegirl.org.cn/zh-hans/%E4%B8%96%E7%95%8C%E8%AE%A1%E5%88%92_%E5%BD%A9%E8%89%B2%E8%88%9E%E5%8F%B0_feat._%E5%88%9D%E9%9F%B3%E6%9C%AA%E6%9D%A5">世界计划 彩色舞台 feat. 初音未来</a></cite></footer></blockquote>
+<div class="video-container"><iframe src="https://www.youtube.com/embed/bOwvg1IVSo8" frameborder="0" loading="lazy" allowfullscreen=""></iframe></div>
+
+<h2 id="本体解析"><a href="#本体解析" class="headerlink" title="本体解析"></a>本体解析</h2><p>整个解析过程没什么特别之处，老套的<code>il2cppdumper</code>+<code>IDA</code>+<code>Fiddler</code>流程，特别是查看了解析出来的<code>dump.cs</code>之后，一股熟悉的感觉铺面而来。依然是使用AES加密，密钥的获得过程和邦邦几乎没有区别。获得API地址和下载服务器地址的地方也几乎和邦邦完全一样。和邦邦不同的地方在于，它使用<a target="_blank" rel="noopener" href="https://msgpack.org/">MessagePack</a>作为内层消息编码，而邦邦使用的是<a target="_blank" rel="noopener" href="https://developers.google.com/protocol-buffers">Protobuf</a>。</p>
+<p>理论上<code>Protobuf</code>是比<code>MessagePack</code>编码节约空间的，因为前者不会在消息里传递结构消息（实际上也没有必要，因为结构本质上是服务端和客户端的约定），后者只是把JSON变换了一种编码方式而已。目前邦邦利用<code>Protobuf</code>编码的MasterDB消息已经接近10M，导致Craft Egg最近不得不再套了一层压缩，以减小消息体积。可以预见的是，Project Sekai一定也会再对MasterDB进行压缩，否则大小增长一定会比邦邦快得多。</p>
+<h2 id="资源文件"><a href="#资源文件" class="headerlink" title="资源文件"></a>资源文件</h2><p>本游戏的资源文件下载地址大体构造与邦邦类似，不过地址里出现了一个GUID的部分，很明显这是服务器返回的东西，因为客户端里没有写死这个。后来对API的调查发现，不带任何参数访问API服务器根地址的话就会获得当前服务器支持的游戏配置，其中就有这个GUID的hash。</p>
+<p>下载了两个文件回来之后发现没有办法直接在<code>AssetStudio</code>里读取，用<a target="_blank" rel="noopener" href="https://hexed.it/">HexEdit</a>打开之后发现文件头并不是普通的<code>AssetBundle</code>的文件头，只能看到明文的FS字样，而且头四个字节似乎不是<code>AssetBundle</code>的一部分。后来跟双草爷爷交流了之后了解到这东西经过异或加密的。从开头保留有FS可以判断出只有五字节被异或，然后空了几个字节，循环往复。去掉头四个字节并且利用异或还原了文件头之后终于可以顺利解析了。于是写了个脚本下载试用版给的所有资源，并且用我自己写的Unity解包脚本全部拆开，发现得到的数据比游戏里给的东西要多，看来Craft Egg还是弄的不干净，还有些<code>AssetBundle</code>里打包进了不应该出现的东西，文件管理也是够混乱的。</p>
+<p>本来以为音频文件要花点时间去找解密用的key，但是使用邦邦的key直接就解密出了能正常播放的音频，免去了这个步骤。不过这游戏设置key的方式也改变了，尝试跟踪了一下也没找到从内存里读取key的办法，现在用的笔记本性能也很弱，分析<code>libil2cpp.so</code>估计需要一整天，就作罢了。</p>
+<p>打开谱面文件一口老血差点喷出来。虽然还是BMS格式，但是头部有这么一句话：</p>
+<blockquote>
+<p>This file was generated by Ched 2.6.2.0.</p>
+</blockquote>
+<p>于是拿着这句话去搜索了一下，找到了一个叫<a target="_blank" rel="noopener" href="https://github.com/paralleltree/Ched">Ched</a>的开源工具，用途嘛……就是制作<code>Chunithm</code>的自制谱。帮世嘉做跟自己街机游戏类似的音游模式还拿不到他们的制谱工具，只能使用开源工具，确实有点黑色幽默的感觉。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这游戏叫换皮其实也不是完全的换皮（相比于某音乐时间），只是使用自己开发框架重新开发了一个游戏，音游部分等等都是重写的，还是做了许多工作。更赞的是那个Virtual Live功能，真正实现在线打call，如果支持AR/VR就更好了。不过，我大概只会选择V家模式，乐团碰不碰看缘分吧。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Project-Sekai/" rel="tag"># Project Sekai</a>
+              <a href="/tags/unity/" rel="tag"># unity</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/31/study-k8s-with-microk8s/" rel="prev" title="First Kubernetes deployment with microk8s and cert-manager">
+      <i class="fa fa-chevron-left"></i> First Kubernetes deployment with microk8s and cert-manager
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/01/11/sekai-world-live2d-plugin/" rel="next" title="Sekai World releases its Live2D plugin">
+      Sekai World releases its Live2D plugin <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%B8%E6%88%8F%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">游戏介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E4%BD%93%E8%A7%A3%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">本体解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">资源文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DNARoma</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dnaroma" title="GitHub → https://github.com/dnaroma" rel="noopener" target="_blank"><i class="fa fa-fw fa-fab fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/miku_zura" title="Twitter → https://twitter.com/miku_zura" rel="noopener" target="_blank"><i class="fa fa-fw fa-fab fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  © 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DNARoma</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> &amp; <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+  <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-firestore.js"></script>
+  <script>
+    firebase.initializeApp({
+      apiKey   : 'AIzaSyAxg9X6LQL6grs3LcdJxkuwrGEFSRHm3UM',
+      projectId: 'myblog-9dbda'
+    });
+
+    function getCount(doc, increaseCount) {
+      // IncreaseCount will be false when not in article page
+      return doc.get().then(d => {
+        var count = 0;
+        if (!d.exists) { // Has no data, initialize count
+          if (increaseCount) {
+            doc.set({
+              count: 1
+            });
+            count = 1;
+          }
+        } else { // Has data
+          count = d.data().count;
+          if (increaseCount) {
+            // If first view this article
+            doc.set({ // Increase count
+              count: count + 1
+            });
+            count++;
+          }
+        }
+
+        return count;
+      });
+    }
+
+    function appendCountTo(el) {
+      return count => {
+        el.innerText = count;
+      }
+    }
+  </script>
+  <script>
+    (function() {
+      var db = firebase.firestore();
+      var articles = db.collection('articles');
+
+      if (CONFIG.page.isPost) { // Is article page
+        var title = document.querySelector('.post-title').innerText.trim();
+        var doc = articles.doc(title);
+        var increaseCount = CONFIG.hostname === location.hostname;
+        if (localStorage.getItem(title)) {
+          increaseCount = false;
+        } else {
+          // Mark as visited
+          localStorage.setItem(title, true);
+        }
+        getCount(doc, increaseCount).then(appendCountTo(document.querySelector('.firestore-visitors-count')));
+      } else if (CONFIG.page.isHome) { // Is index page
+        var promises = [...document.querySelectorAll('.post-title')].map(element => {
+          var title = element.innerText.trim();
+          var doc = articles.doc(title);
+          return getCount(doc);
+        });
+        Promise.all(promises).then(counts => {
+          var metas = document.querySelectorAll('.firestore-visitors-count');
+          counts.forEach((val, idx) => {
+            appendCountTo(metas[idx])(val);
+          });
+        });
+      }
+    })();
+  </script>
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script type="text/javascript" charset="utf-8" src="/js/lazyload-plugin/lazyload.intersectionObserver.min.js"></script></body></html>

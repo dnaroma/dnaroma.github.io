@@ -1,0 +1,650 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.dna.moe","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":{"disqus":{"text":"Load Disqus","order":-1}}},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Docker is a amazing container platform, it helps fast deploying and scaling service among multiple servers (called cluster). But Docker is not good at managing instances on different servers, DevOps n">
+<meta property="og:type" content="article">
+<meta property="og:title" content="First Kubernetes deployment with microk8s and cert-manager">
+<meta property="og:url" content="https://blog.dna.moe/2020/07/31/study-k8s-with-microk8s/index.html">
+<meta property="og:site_name" content="DNARoma's DevOps Blog">
+<meta property="og:description" content="Docker is a amazing container platform, it helps fast deploying and scaling service among multiple servers (called cluster). But Docker is not good at managing instances on different servers, DevOps n">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-07-31T20:10:57.000Z">
+<meta property="article:modified_time" content="2022-07-17T20:03:32.693Z">
+<meta property="article:author" content="DNARoma">
+<meta property="article:tag" content="kubernetes">
+<meta property="article:tag" content="microk8s">
+<meta property="article:tag" content="cert-manager">
+<meta property="article:tag" content="mysql">
+<meta property="article:tag" content="phpmyadmin">
+<meta property="article:tag" content="nginx">
+<meta property="article:tag" content="letsencrypt">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://blog.dna.moe/2020/07/31/study-k8s-with-microk8s/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>First Kubernetes deployment with microk8s and cert-manager | DNARoma's DevOps Blog</title>
+  
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-125808664-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-125808664-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="DNARoma's DevOps Blog" type="application/rss+xml">
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">DNARoma's DevOps Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">DevOps Blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-fa fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-fa fa-archive"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-fa fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-fa fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-fa fa-th"></i>Categories</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://blog.dna.moe/2020/07/31/study-k8s-with-microk8s/">
+
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DNARoma">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DNARoma's DevOps Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          First Kubernetes deployment with microk8s and cert-manager
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-07-31 22:10:57" itemprop="dateCreated datePublished" datetime="2020-07-31T22:10:57+02:00">2020-07-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-07-17 22:03:32" itemprop="dateModified" datetime="2022-07-17T22:03:32+02:00">2022-07-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-users"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="firestore-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><code>Docker</code> is a amazing container platform, it helps fast deploying and scaling service among multiple servers (called <code>cluster</code>). But <code>Docker</code> is not good at managing instances on different servers, DevOps need a new software. A great thank to Google, <code>Kubernetes (K8s)</code> is well fitted for </p>
+<blockquote>
+<p>automating deployment, scaling, and management of containerized applications. </p>
+</blockquote>
+<p>In this post I will show my first impression on Kubernetes and how I setup a deployment of <code>MySQL</code>+<code>PhpMyAdmin</code>+<code>Nginx</code> and assign a ssl certificate automatically with <code>cert-manager</code> and the steps of my troubleshooting.</p>
+<span id="more"></span>
+
+<h2 id="Kubernetes-and-MicroK8s"><a href="#Kubernetes-and-MicroK8s" class="headerlink" title="Kubernetes and MicroK8s"></a>Kubernetes and MicroK8s</h2><p>The official <a href="k8s.io"><code>Kubernetes</code></a> is mainly for cloud platform who needs to manage many clusters, and the control-panel node (which can also be called <code>master</code> node) is not recommended and not allowed to run any container as default. For a bare metal server (like VPS without upstream K8s support) it’s too heavy. A lightweighted K8s solution like <a href="microk8s.io"><code>MicroK8s</code></a> is the best choice.</p>
+<p><code>MicroK8s</code> is developed by Canonical, the author of <code>Ubuntu</code>, and is</p>
+<blockquote>
+<p>The smallest, simplest, pure production K8s.<br>For clusters, laptops, IoT and Edge, on Intel and ARM.</p>
+</blockquote>
+<p>To install on <code>Ubuntu</code> system is very simple with <code>snapd</code> installed:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo snap install microk8s --classic</span><br></pre></td></tr></tbody></table></figure>
+
+<p>and it’s done. You can watch the install status with <code>microk8s status --wait-ready</code> if you want. More detailed information about installation see <a target="_blank" rel="noopener" href="https://microk8s.io/docs">Offcial Docs</a>.</p>
+<p>For convenience, I recommend running following code:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">alias</span> kubectl=<span class="string">'microk8s kubectl'</span></span><br><span class="line">microk8s <span class="built_in">enable</span> dns helm <span class="comment"># helm3 is also available</span></span><br><span class="line"><span class="built_in">alias</span> helm=<span class="string">'microk8s helm'</span> <span class="comment"># replace helm with helm3 if you use helm3 in command above</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Secret-Volume-Service-Pod-Ingress"><a href="#Secret-Volume-Service-Pod-Ingress" class="headerlink" title="Secret? Volume? Service? Pod? Ingress?"></a>Secret? Volume? Service? Pod? Ingress?</h2><p>Different from <code>Docker</code>, You’ll face lots of new concepts in order to start a single service:</p>
+<ul>
+<li><code>ConfigMap</code> for providing configuration</li>
+<li><code>Secret</code> for store private or secret information</li>
+<li><code>Volume</code> for providing storage space</li>
+<li><code>Deployment</code> for deploying and scaling service</li>
+<li><code>Pod</code> for running the service instance in container</li>
+<li><code>Ingress</code> for providing service to public network.</li>
+</ul>
+<p>Those description is based on my understandings and may be not accurate enough. It’s really hard to understand how they work at the beginning, but they really helps to seperate configs and instance, allow you to generate different configs from a template for deploying on different nodes in clusters. But talk is cheap, now I show you how I setup a cluster with MySQL, PhpMyAdmin, Nginx.</p>
+<h2 id="Deploy-first-service"><a href="#Deploy-first-service" class="headerlink" title="Deploy first service"></a>Deploy first service</h2><h3 id="PersistentVolume-and-PersistentVolumeClaim"><a href="#PersistentVolume-and-PersistentVolumeClaim" class="headerlink" title="PersistentVolume and PersistentVolumeClaim"></a><code>PersistentVolume</code> and <code>PersistentVolumeClaim</code></h3><p>Let’s setup a MySQL service as a try. As a container will lost its data after shutdown, I need a <code>PersistentVolume</code> to persist database. A <code>PersistentVolume</code> is like a disk for containers, every container can claim some space from it, therefore a extra <code>PersistentVolumeClaim</code> is needed.</p>
+<p>All configuration file is written in <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/YAML"><code>yaml</code></a> format, and a <code>yaml</code> config file can contain multiple configs. The following code shows a <code>PersistentVolume</code> and a <code>PersistentVolumeClaim</code> for MySQL database storage:</p>
+<script src="//gist.github.com/178b3b187aa329c01b27d90a7b38709c.js?file=mysql-pv.yaml"></script>
+
+<p>Assuming the above code is written in <code>mysql-pv.yaml</code>, run following code to create the actual resources:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f mysql-pv.yaml</span><br></pre></td></tr></tbody></table></figure>
+
+<p>and check if the resource is sucessfully created:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get pv</span><br><span class="line">NAME              CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                    STORAGECLASS   REASON   AGE</span><br><span class="line">mysql-pv-volume   2Gi        RWO            Retain           Bound    default/mysql-pv-claim   manual                  1m</span><br><span class="line"></span><br><span class="line">$ kubectl get pvc</span><br><span class="line">NAME             STATUS   VOLUME            CAPACITY   ACCESS MODES   STORAGECLASS   AGE</span><br><span class="line">mysql-pv-claim   Bound    mysql-pv-volume   2Gi        RWO            manual         1m</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="Deployment-and-Service"><a href="#Deployment-and-Service" class="headerlink" title="Deployment and Service"></a><code>Deployment</code> and <code>Service</code></h3><p>The next step is to create a <code>Deployment</code> configuration and a <code>Service</code> configuration. The <code>PersistentVolumeClaim</code> created above will be mounted to the <code>Deployment</code>. As a database is a stateful application, we don’t need to take care of scaling problem.</p>
+<script src="//gist.github.com/178b3b187aa329c01b27d90a7b38709c.js?file=mysql-deployment.yaml"></script>
+
+<h3 id="Secret"><a href="#Secret" class="headerlink" title="Secret"></a><code>Secret</code></h3><p>To keep the root password safe, it is not directly written in <code>env</code> section, but retrieved from <code>mysql-secret</code>, which is a <code>Secret</code> resource created from following code:</p>
+<script src="//gist.github.com/178b3b187aa329c01b27d90a7b38709c.js?file=mysql-secret.yaml"></script>
+
+<p>Attention that the value of <code>root_password</code> must be base64 encoded.</p>
+<h3 id="Deploy-MySQL-service"><a href="#Deploy-MySQL-service" class="headerlink" title="Deploy MySQL service"></a>Deploy MySQL service</h3><p>Assume that the two above codes are saved as <code>mysql-deployment.yaml</code> and <code>mysql-secret.yaml</code>, apply them using:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f mysql-secret.yaml</span><br><span class="line">kubectl apply -f mysql-deployment.yaml</span><br></pre></td></tr></tbody></table></figure>
+
+<p>By creating a <code>Deployment</code> resource, a <code>Pod</code> will also be created to run the instance. The <code>Pod</code> is the real container, backended by <code>containerd</code> by default.</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl describe secret mysql-secret</span><br><span class="line">Name:         mysql-secret</span><br><span class="line">Namespace:    default</span><br><span class="line">Labels:       &lt; none &gt;</span><br><span class="line">Annotations:</span><br><span class="line">Type:         Opaque</span><br><span class="line"></span><br><span class="line">Data</span><br><span class="line">====</span><br><span class="line">root_password:  16 bytes</span><br><span class="line"></span><br><span class="line">$ kubectl get deploy -l app=mysql</span><br><span class="line">NAME    READY   UP-TO-DATE   AVAILABLE   AGE</span><br><span class="line">mysql   1/1     1            1           3m</span><br><span class="line"></span><br><span class="line">$ kubectl get pod -l app=mysql</span><br><span class="line">NAME                    READY   STATUS    RESTARTS   AGE</span><br><span class="line">mysql-75b7c7dcb-qmxqg   1/1     Running   1          3m</span><br><span class="line"></span><br><span class="line">$ kubectl get svc -l app=mysql</span><br><span class="line">NAME    TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE</span><br><span class="line">mysql   ClusterIP   10.152.***.***   &lt; none &gt;      3306/TCP   3m</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Now try connecting to the mysql instance to see if the deployment succeeds.</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl run -it --<span class="built_in">rm</span> --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -p[your password]</span><br></pre></td></tr></tbody></table></figure>
+
+<p>It will run a instant <code>Pod</code> running MySQL version 5.6 and call mysql client command to connect local mysql service. If you see a error message like <code>Unknown mysql server host 'mysql'</code>, it means that your deployment is not correct or you didn’t enable dns addon. You can follow steps in <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/">official guide</a> to check your dns addon working state. When everything works, you can see following prompt:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">If you dont see a <span class="built_in">command</span> prompt, try pressing enter.</span><br><span class="line"></span><br><span class="line">mysql&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>You can try executing some MySQL command here to check if MySQL server really works.</p>
+<h2 id="Deploy-PhpMyAdmin"><a href="#Deploy-PhpMyAdmin" class="headerlink" title="Deploy PhpMyAdmin"></a>Deploy <code>PhpMyAdmin</code></h2><p>It’s time to deploy more services. Next one is <code>PhpMyAdmin</code>, a popular database management web application written in PHP. I recommend you use the default docker image branch instead of the <code>fpm</code> branch, at least I didn’t make the <code>fpm</code> image work properly.</p>
+<p>With following code you can deploy a pma service in one configuration file. Remember to set <code>PMA_ABSOLUTE_URI</code> to the real public uri you want to use in development or production.</p>
+<script src="//gist.github.com/178b3b187aa329c01b27d90a7b38709c.js?file=pma-deployment.yaml"></script>
+
+<p>Then run following command to apply the configuration:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f pma-deployment.yaml</span><br></pre></td></tr></tbody></table></figure>
+
+<p>and check the status of this deployment:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get deploy -l app=pma</span><br><span class="line">NAME   READY   UP-TO-DATE   AVAILABLE   AGE</span><br><span class="line">pma    1/1     1            1           1m</span><br><span class="line"></span><br><span class="line">$ kubectl get svc pma-service</span><br><span class="line">NAME          TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE</span><br><span class="line">pma-service   ClusterIP   10.152.***.***   &lt; none &gt;      80/TCP    1m</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Deploy-Nginx-with-Nginx-Ingress-and-secure-with-cert-manager"><a href="#Deploy-Nginx-with-Nginx-Ingress-and-secure-with-cert-manager" class="headerlink" title="Deploy Nginx with Nginx-Ingress and secure with cert-manager"></a>Deploy <code>Nginx</code> with <code>Nginx-Ingress</code> and secure with <code>cert-manager</code></h2><p>Until now the deployed service is not able to be accessed from externel network, even not able from localhost. To allow external access, an <code>Ingress</code> resource will be created. Furthermore, the web service will be secured with a ssl certificate.</p>
+<h3 id="Use-Nginx-Ingress-to-deploy-nginx-service"><a href="#Use-Nginx-Ingress-to-deploy-nginx-service" class="headerlink" title="Use Nginx-Ingress to deploy nginx service"></a>Use <code>Nginx-Ingress</code> to deploy nginx service</h3><p><a target="_blank" rel="noopener" href="https://kubernetes.github.io/ingress-nginx/"><code>Nginx-Ingress</code></a> allows you deploy nginx service with some simple commands, based on <code>Kubernetes Ingress</code>, use <code>ConfigMap</code> to auto configure nginx. All you need to do is install it and write a <code>Ingress</code> config file and then all done.</p>
+<p>I recommend you use <code>helm</code> to install <code>Nginx-Ingress</code> using <code>microk8s enable helm</code>, replace <em>helm</em> with <em>helm3</em> if you want to use <code>helm3</code>. You will also need a <em>tiller</em> account for <code>helm</code>:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl create serviceaccount tiller --namespace=kube-system</span><br><span class="line">serviceaccount <span class="string">"tiller"</span> created</span><br><span class="line"></span><br><span class="line">$ kubectl create clusterrolebinding tiller-admin --serviceaccount=kube-system:tiller --clusterrole=cluster-admin</span><br><span class="line">clusterrolebinding.rbac.authorization.k8s.io <span class="string">"tiller-admin"</span> created</span><br><span class="line"></span><br><span class="line">$ helm init --service-account=tiller</span><br><span class="line"><span class="variable">$HELM_HOME</span> has been configured at /Users/myaccount/.helm.</span><br><span class="line"></span><br><span class="line">Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.</span><br><span class="line"></span><br><span class="line">Please note: by default, Tiller is deployed with an insecure <span class="string">'allow unauthenticated users'</span> policy.</span><br><span class="line">To prevent this, run `helm init` with the --tiller-tls-verify flag.</span><br><span class="line">For more information on securing your installation see: https://docs.helm.sh/using_helm/<span class="comment">#securing-your-helm-installation</span></span><br><span class="line">Happy Helming!</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Then run <code>helm repo update</code> to update official repo. Assume that install service name is <em>nginx</em>, run <code>helm install stable/nginx-ingress --name nginx</code> to install <code>Nginx-Ingress</code> controller. But by default it requires a <code>LoadBalancer</code> to assign an external ip to the controller. As a bare metal server, the provider will not give an upstream <code>LoadBalancer</code> support. If you really want to use <code>LoadBalancer</code> you can install <a target="_blank" rel="noopener" href="https://metallb.universe.tf/"><code>MetalLB</code></a> which is still in beta phase and you need some IP available. I recommend using <code>NodePort</code> mode rather than <code>LoadBalancer</code> for convenience.</p>
+<p><code>Helm</code> supports config override using <em>values</em>. At <a target="_blank" rel="noopener" href="https://hub.helm.sh/charts/nginx/nginx-ingress"><code>Helm Hub</code> page</a> the configurable values are listed. Values can be set in command like <code>--set config.service.type=NodePort</code>, or in a file:</p>
+<script src="//gist.github.com/178b3b187aa329c01b27d90a7b38709c.js?file=nginx-value.yaml"></script>
+
+<p>Remember to assign the external IP to your server IP. Check controller service status:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get svc -l app=nginx-ingress</span><br><span class="line">NAME                                  TYPE        CLUSTER-IP       EXTERNAL-IP        PORT(S)                      AGE</span><br><span class="line">nginx-nginx-ingress-controller        NodePort    10.152.***.***   [your server ip]   80:30123/TCP,443:30456/TCP   1m</span><br><span class="line">nginx-nginx-ingress-default-backend   ClusterIP   10.152.***.***   &lt; none &gt;           80/TCP                       1m</span><br></pre></td></tr></tbody></table></figure>
+
+<p>You can access <code>http://[your server ip]:30123</code> and get a default backend response with 404.</p>
+<h3 id="Expose-PhpMyAdmin-using-Ingress"><a href="#Expose-PhpMyAdmin-using-Ingress" class="headerlink" title="Expose PhpMyAdmin using Ingress"></a>Expose <code>PhpMyAdmin</code> using <code>Ingress</code></h3><p>The <code>Nginx-Ingress</code> controller supports exposing a service with <code>Ingress</code> configuration, where I just need to point desired host, path and reverse proxy (backend). A sample yaml is shown below:</p>
+<script src="//gist.github.com/178b3b187aa329c01b27d90a7b38709c.js?file=pma-ingress.yaml"></script>
+
+<p>and comment out line 6 and line 18-21 to disable tls for now. It means that we expose the backend service <code>pma-service</code> to host, reverse proxy any request sent to the host (domain) to port 80 of <code>pma-service</code>. Apply this yaml using:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f pma-ingress.yaml</span><br></pre></td></tr></tbody></table></figure>
+
+<p>and check ingress status:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl get ingress</span><br><span class="line">NAME   CLASS    HOSTS            ADDRESS          PORTS     AGE</span><br><span class="line">pma    &lt; none &gt; [your hostname]  [your server ip] 80, 443   24h</span><br></pre></td></tr></tbody></table></figure>
+
+<p>the address could be <em>pending</em> for a while because the <code>Ingress</code> will send config to the <code>Nginx-Ingress</code> controller and wait it to activate. Once your server ip is shown in the <code>ADDRESS</code> field, you can access the host you set in <code>pma-ingress.yaml</code> to test if the ingress works. Remember to point the host to your server ip in DNS provider.</p>
+<h3 id="Secure-Web-Application-with-SSL"><a href="#Secure-Web-Application-with-SSL" class="headerlink" title="Secure Web Application with SSL"></a>Secure Web Application with SSL</h3><p>Normally I use <code>Let's encrypt</code> to secure the connection using <code>acme.sh</code> script and import private key and public certificate in Nginx virtual host config. But with Kubernetes I can use <a target="_blank" rel="noopener" href="https://cert-manager.io/"><code>cert-manager</code></a> to automate this process.</p>
+<p>At first run following commands to install <code>cert-manager</code> with <code>helm</code>:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">kubectl create namespace cert-manager</span><br><span class="line">helm repo add jetstack https://charts.jetstack.io</span><br><span class="line">helm repo update</span><br><span class="line"></span><br><span class="line">helm install \</span><br><span class="line">  --name cert-manager \ <span class="comment"># if you use helm3, delete '--name'</span></span><br><span class="line">  --namespace cert-manager \</span><br><span class="line">  --version v0.16.0 \</span><br><span class="line">  jetstack/cert-manager \</span><br><span class="line">  --<span class="built_in">set</span> installCRDs=<span class="literal">true</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>Verify the installation with:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get pods --namespace cert-manager</span><br><span class="line">NAME                                       READY   STATUS    RESTARTS   AGE</span><br><span class="line">cert-manager-c456f8b56-4wkq7               1/1     Running   0          1m</span><br><span class="line">cert-manager-cainjector-6b4f5b9c99-tqp5c   1/1     Running   0          1m</span><br><span class="line">cert-manager-webhook-5cfd5478b-kd69h       1/1     Running   0          1m</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Then create two <code>Issuer</code>, this is a new type imported by <code>cert-manager</code>. The one is for test using staging acme server, one is for production using real acme server.</p>
+<script src="//gist.github.com/178b3b187aa329c01b27d90a7b38709c.js?file=le-staging.yaml"></script>
+<script src="//gist.github.com/178b3b187aa329c01b27d90a7b38709c.js?file=le-prod.yaml"></script>
+
+<p>The class name defined at line 18 must match the class name set in <code>pma-ingress.yaml</code> at line 5. The generated cert will be stored in <code>Secret</code>, name is defined at line 13 (<em>privateKeySecretRef.name</em>). Apply them using:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f le-staging.yaml</span><br><span class="line">kubectl apply -f le-prod.yaml</span><br></pre></td></tr></tbody></table></figure>
+
+<p>You can check the status of issuer with <code>kubectl describe issuer letsencrypt-staging</code> or <code>kubectl describe issuer letsencrypt-prod</code>.</p>
+<h3 id="Sign-SSL-Certificate-and-Deploy"><a href="#Sign-SSL-Certificate-and-Deploy" class="headerlink" title="Sign SSL Certificate and Deploy"></a>Sign SSL Certificate and Deploy</h3><p>Uncomment line 6 and line 18-21 in <code>pma-ingress.yaml</code>, replace the value at line 6 with <em>letsencrypt-staging</em> for testing purpose. Then apply this ingress config again. Check the status of certificate:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl get certificate</span><br><span class="line">NAME      READY   SECRET    AGE</span><br><span class="line">pma-tls   True    pma-tls   3m</span><br></pre></td></tr></tbody></table></figure>
+
+<p>until the field <code>READY</code> become <code>True</code>. If it is always <code>False</code> you can check detailed information about the certificate using <code>kubectl describe certificate pma-tls</code>.</p>
+<p>The certificate is expected to be stored in <code>pma-tls</code>:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">$ kubectl describe secret pma-tls</span><br><span class="line">Name:         pma-tls</span><br><span class="line">Namespace:    default</span><br><span class="line">Labels:       &lt; none &gt;</span><br><span class="line">Annotations:  cert-manager.io/alt-names: [your hostname]</span><br><span class="line">              cert-manager.io/certificate-name: pma-tls</span><br><span class="line">              cert-manager.io/common-name: [your hostname]</span><br><span class="line">              cert-manager.io/ip-sans:</span><br><span class="line">              cert-manager.io/issuer-kind: Issuer</span><br><span class="line">              cert-manager.io/issuer-name: letsencrypt-staging</span><br><span class="line">              cert-manager.io/uri-sans:</span><br><span class="line"></span><br><span class="line">Type:  kubernetes.io/tls</span><br><span class="line"></span><br><span class="line">Data</span><br><span class="line">====</span><br><span class="line">tls.crt:  3558 bytes</span><br><span class="line">tls.key:  1679 bytes</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Try accessing <code>https://[your hostname]/</code>, you will get a certificate warning, it’s normal because the certificate is signed by staging acme server. It means that the certificate issuer is working.</p>
+<p>Replace <code>letsencrypt-staging</code> with <code>letsencrypt-prod</code> at line 6 in <code>pma-ingress.yaml</code>, delete the secret <code>pma-tls</code> using</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl delete secret pma-tls</span><br></pre></td></tr></tbody></table></figure>
+
+<p>and apply the <code>pma-ingress.yaml</code> again. Then wait a few minutes until new certificate is ready.</p>
+<p>Now you should be able to access <code>https://[your hostname]/</code> without any certificate warning, otherwise check if you forget to delete old <code>pma-tls</code> secret, or the certificate issue process is erroneous (execute <code>kubectl describe certificate pma-tls</code> to check the status).</p>
+<h2 id="Afterword"><a href="#Afterword" class="headerlink" title="Afterword"></a>Afterword</h2><p>At the very beginning, the Kubernetes seems a little bit scared and complicated. I need to write some configuration yaml files to setup just one service. But it has great profit: I don’t need to set every config by myself, I don’t need to write nginx config, run acme.sh commands etc. And I can deploy another cluster with same configuration files in just a few minutes. With <code>kustomize</code> it’s quiet easy to generete and reuse configurations among clusters (see <a target="_blank" rel="noopener" href="https://github.com/kubernetes-sigs/kustomize">GitHub repo</a> and <a target="_blank" rel="noopener" href="https://kubernetes.io/blog/2018/05/29/introducing-kustomize-template-free-configuration-customization-for-kubernetes/">this blog post</a>).</p>
+<p>An obvious disadvantage is relatively high memory usage, for example my <code>Kubernetes</code> configuration will eat up to 1.5 GiB memory. The recommended memory, according to <code>microk8s</code> official docs, is 4GiB. But anyway, <code>Kubernetes</code> worth a try.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/kubernetes/" rel="tag"># kubernetes</a>
+              <a href="/tags/microk8s/" rel="tag"># microk8s</a>
+              <a href="/tags/cert-manager/" rel="tag"># cert-manager</a>
+              <a href="/tags/mysql/" rel="tag"># mysql</a>
+              <a href="/tags/phpmyadmin/" rel="tag"># phpmyadmin</a>
+              <a href="/tags/nginx/" rel="tag"># nginx</a>
+              <a href="/tags/letsencrypt/" rel="tag"># letsencrypt</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/16/coming-changes-bandori-database/" rel="prev" title="Coming breaking changes about Bandori Database, the future and more">
+      <i class="fa fa-chevron-left"></i> Coming breaking changes about Bandori Database, the future and more
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/08/analyse-project-sekai-trial-version-md/" rel="next" title="Project Sekai 试玩版分析">
+      Project Sekai 试玩版分析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Kubernetes-and-MicroK8s"><span class="nav-number">1.</span> <span class="nav-text">Kubernetes and MicroK8s</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Secret-Volume-Service-Pod-Ingress"><span class="nav-number">2.</span> <span class="nav-text">Secret? Volume? Service? Pod? Ingress?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Deploy-first-service"><span class="nav-number">3.</span> <span class="nav-text">Deploy first service</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PersistentVolume-and-PersistentVolumeClaim"><span class="nav-number">3.1.</span> <span class="nav-text">PersistentVolume and PersistentVolumeClaim</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deployment-and-Service"><span class="nav-number">3.2.</span> <span class="nav-text">Deployment and Service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Secret"><span class="nav-number">3.3.</span> <span class="nav-text">Secret</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-MySQL-service"><span class="nav-number">3.4.</span> <span class="nav-text">Deploy MySQL service</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Deploy-PhpMyAdmin"><span class="nav-number">4.</span> <span class="nav-text">Deploy PhpMyAdmin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Deploy-Nginx-with-Nginx-Ingress-and-secure-with-cert-manager"><span class="nav-number">5.</span> <span class="nav-text">Deploy Nginx with Nginx-Ingress and secure with cert-manager</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Use-Nginx-Ingress-to-deploy-nginx-service"><span class="nav-number">5.1.</span> <span class="nav-text">Use Nginx-Ingress to deploy nginx service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Expose-PhpMyAdmin-using-Ingress"><span class="nav-number">5.2.</span> <span class="nav-text">Expose PhpMyAdmin using Ingress</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Secure-Web-Application-with-SSL"><span class="nav-number">5.3.</span> <span class="nav-text">Secure Web Application with SSL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sign-SSL-Certificate-and-Deploy"><span class="nav-number">5.4.</span> <span class="nav-text">Sign SSL Certificate and Deploy</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Afterword"><span class="nav-number">6.</span> <span class="nav-text">Afterword</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DNARoma</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/dnaroma" title="GitHub → https://github.com/dnaroma" rel="noopener" target="_blank"><i class="fa fa-fw fa-fab fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/miku_zura" title="Twitter → https://twitter.com/miku_zura" rel="noopener" target="_blank"><i class="fa fa-fw fa-fab fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  © 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DNARoma</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> &amp; <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+  <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-firestore.js"></script>
+  <script>
+    firebase.initializeApp({
+      apiKey   : 'AIzaSyAxg9X6LQL6grs3LcdJxkuwrGEFSRHm3UM',
+      projectId: 'myblog-9dbda'
+    });
+
+    function getCount(doc, increaseCount) {
+      // IncreaseCount will be false when not in article page
+      return doc.get().then(d => {
+        var count = 0;
+        if (!d.exists) { // Has no data, initialize count
+          if (increaseCount) {
+            doc.set({
+              count: 1
+            });
+            count = 1;
+          }
+        } else { // Has data
+          count = d.data().count;
+          if (increaseCount) {
+            // If first view this article
+            doc.set({ // Increase count
+              count: count + 1
+            });
+            count++;
+          }
+        }
+
+        return count;
+      });
+    }
+
+    function appendCountTo(el) {
+      return count => {
+        el.innerText = count;
+      }
+    }
+  </script>
+  <script>
+    (function() {
+      var db = firebase.firestore();
+      var articles = db.collection('articles');
+
+      if (CONFIG.page.isPost) { // Is article page
+        var title = document.querySelector('.post-title').innerText.trim();
+        var doc = articles.doc(title);
+        var increaseCount = CONFIG.hostname === location.hostname;
+        if (localStorage.getItem(title)) {
+          increaseCount = false;
+        } else {
+          // Mark as visited
+          localStorage.setItem(title, true);
+        }
+        getCount(doc, increaseCount).then(appendCountTo(document.querySelector('.firestore-visitors-count')));
+      } else if (CONFIG.page.isHome) { // Is index page
+        var promises = [...document.querySelectorAll('.post-title')].map(element => {
+          var title = element.innerText.trim();
+          var doc = articles.doc(title);
+          return getCount(doc);
+        });
+        Promise.all(promises).then(counts => {
+          var metas = document.querySelectorAll('.firestore-visitors-count');
+          counts.forEach((val, idx) => {
+            appendCountTo(metas[idx])(val);
+          });
+        });
+      }
+    })();
+  </script>
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script type="text/javascript" charset="utf-8" src="/js/lazyload-plugin/lazyload.intersectionObserver.min.js"></script></body></html>
