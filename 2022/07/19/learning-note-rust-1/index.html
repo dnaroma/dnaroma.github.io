@@ -19,29 +19,30 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"blog.dna.moe","root":"/","images":"/images","scheme":"Mist","darkmode":true,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":true,"nav":{"disqus":{"text":"Load Disqus","order":-1}}},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="世嘉出的新的V家相关游戏Project Sekai终于出了一个试玩版，也展示了一下世嘉谱师的实力（火花的Master难度吓死人）。整个游戏的音游部分比较类似于世嘉自家的街机音游Chunithm，音符可以跨多个轨道，只要点中其中覆盖的任意轨道就可以得分。由于本游戏和Bandori游戏的开发商都是Craft Egg，可以预见到这就是邦邦换皮游戏，而对游戏的分析也证实了这一点。">
+    <meta name="description" content="Rust is a modern compiled programming language. It is fast and secure, it is a strong-typed language, and it can build any type of program. Due to tiny binary output, it is suitable to build tiny dock">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Project Sekai 试玩版分析">
-<meta property="og:url" content="https://blog.dna.moe/2020/09/08/analyse-project-sekai-trial-version-md/index.html">
+<meta property="og:title" content="Rust Programming Language Learning Note - Part 1">
+<meta property="og:url" content="https://blog.dna.moe/2022/07/19/learning-note-rust-1/index.html">
 <meta property="og:site_name" content="DNARoma's DevOps Blog">
-<meta property="og:description" content="世嘉出的新的V家相关游戏Project Sekai终于出了一个试玩版，也展示了一下世嘉谱师的实力（火花的Master难度吓死人）。整个游戏的音游部分比较类似于世嘉自家的街机音游Chunithm，音符可以跨多个轨道，只要点中其中覆盖的任意轨道就可以得分。由于本游戏和Bandori游戏的开发商都是Craft Egg，可以预见到这就是邦邦换皮游戏，而对游戏的分析也证实了这一点。">
+<meta property="og:description" content="Rust is a modern compiled programming language. It is fast and secure, it is a strong-typed language, and it can build any type of program. Due to tiny binary output, it is suitable to build tiny dock">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-09-08T21:05:08.000Z">
-<meta property="article:modified_time" content="2022-07-17T20:03:32.692Z">
+<meta property="article:published_time" content="2022-07-18T22:07:01.000Z">
+<meta property="article:modified_time" content="2022-07-18T22:07:48.288Z">
 <meta property="article:author" content="DNARoma">
-<meta property="article:tag" content="unity">
-<meta property="article:tag" content="Project Sekai">
+<meta property="article:tag" content="Develop">
+<meta property="article:tag" content="Rust">
+<meta property="article:tag" content="Notes">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://blog.dna.moe/2020/09/08/analyse-project-sekai-trial-version-md/">
+<link rel="canonical" href="https://blog.dna.moe/2022/07/19/learning-note-rust-1/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://blog.dna.moe/2020/09/08/analyse-project-sekai-trial-version-md/","path":"2020/09/08/analyse-project-sekai-trial-version-md/","title":"Project Sekai 试玩版分析"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://blog.dna.moe/2022/07/19/learning-note-rust-1/","path":"2022/07/19/learning-note-rust-1/","title":"Rust Programming Language Learning Note - Part 1"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Project Sekai 试玩版分析 | DNARoma's DevOps Blog</title>
+<title>Rust Programming Language Learning Note - Part 1 | DNARoma's DevOps Blog</title>
   
     <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-125808664-1"></script>
   <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-125808664-1","only_pageview":false}</script>
@@ -121,7 +122,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%B8%E6%88%8F%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">游戏介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E4%BD%93%E8%A7%A3%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">本体解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">资源文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Setup-Rust"><span class="nav-number">1.</span> <span class="nav-text">Setup Rust</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#As-always-Hello-World"><span class="nav-number">2.</span> <span class="nav-text">As always, Hello World</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary"><span class="nav-number">3.</span> <span class="nav-text">Summary</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -192,7 +193,7 @@
   
 
   <article itemscope="" itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://blog.dna.moe/2020/09/08/analyse-project-sekai-trial-version-md/">
+    <link itemprop="mainEntityOfPage" href="https://blog.dna.moe/2022/07/19/learning-note-rust-1/">
 
     <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -205,12 +206,12 @@
     </span>
 
     <span hidden="" itemprop="post" itemscope="" itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Project Sekai 试玩版分析 | DNARoma's DevOps Blog">
+      <meta itemprop="name" content="Rust Programming Language Learning Note - Part 1 | DNARoma's DevOps Blog">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Project Sekai 试玩版分析
+          Rust Programming Language Learning Note - Part 1
         </h1>
 
         <div class="post-meta-container">
@@ -220,15 +221,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
+      
 
-      <time title="Created: 2020-09-08 23:05:08" itemprop="dateCreated datePublished" datetime="2020-09-08T23:05:08+02:00">2020-09-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-07-17 22:03:32" itemprop="dateModified" datetime="2022-07-17T22:03:32+02:00">2022-07-17</time>
+      <time title="Created: 2022-07-19 00:07:01 / Modified: 00:07:48" itemprop="dateCreated datePublished" datetime="2022-07-19T00:07:01+02:00">2022-07-19</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -236,7 +231,15 @@
       </span>
       <span class="post-meta-item-text">In</span>
         <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-          <a href="/categories/Hack/" itemprop="url" rel="index"><span itemprop="name">Hack</span></a>
+          <a href="/categories/Learn/" itemprop="url" rel="index"><span itemprop="name">Learn</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+          <a href="/categories/Learn/Rust/" itemprop="url" rel="index"><span itemprop="name">Rust</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+          <a href="/categories/Learn/Rust/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
         </span>
     </span>
 
@@ -257,23 +260,39 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>世嘉出的新的V家相关游戏<code>Project Sekai</code>终于出了一个试玩版，也展示了一下世嘉谱师的实力（火花的Master难度吓死人）。整个游戏的音游部分比较类似于世嘉自家的街机音游<code>Chunithm</code>，音符可以跨多个轨道，只要点中其中覆盖的任意轨道就可以得分。由于本游戏和<code>Bandori</code>游戏的开发商都是<a target="_blank" rel="noopener" href="https://www.craftegg.co.jp/">Craft Egg</a>，可以预见到这就是邦邦换皮游戏，而对游戏的分析也证实了这一点。</p>
+        <p><a target="_blank" rel="noopener" href="https://rust-lang.org/">Rust</a> is a modern compiled programming language. It is fast and secure, it is a strong-typed language, and it can build any type of program. Due to tiny binary output, it is suitable to build tiny docker images for running on the cloud.</p>
 <span id="more"></span>
-<h2 id="游戏介绍"><a href="#游戏介绍" class="headerlink" title="游戏介绍"></a>游戏介绍</h2><blockquote><p>《世界计画彩色舞台feat. 初音未来》主要以现实世界中位于日本涩谷附近的地区作为舞台，在这里的初音未来等人与我们在现实世界中对他们的认知相同，作为虚拟歌手演唱着许多创作者们所创作的歌曲；而另一个舞台「世界（SEKAI）」是个从思念所诞生出来的场所，同时在这边也将创造出许多歌曲，本作的主角之一「星乃一歌」在因缘际会下来到了「世界」，并在这里与初音相遇。</p>
-<footer><strong>萌娘百科</strong><cite><a target="_blank" rel="noopener" href="https://zh.moegirl.org.cn/zh-hans/%E4%B8%96%E7%95%8C%E8%AE%A1%E5%88%92_%E5%BD%A9%E8%89%B2%E8%88%9E%E5%8F%B0_feat._%E5%88%9D%E9%9F%B3%E6%9C%AA%E6%9D%A5">世界计划 彩色舞台 feat. 初音未来</a></cite></footer></blockquote>
-<div class="video-container"><iframe src="https://www.youtube.com/embed/bOwvg1IVSo8" frameborder="0" loading="lazy" allowfullscreen=""></iframe></div>
 
-<h2 id="本体解析"><a href="#本体解析" class="headerlink" title="本体解析"></a>本体解析</h2><p>整个解析过程没什么特别之处，老套的<code>il2cppdumper</code>+<code>IDA</code>+<code>Fiddler</code>流程，特别是查看了解析出来的<code>dump.cs</code>之后，一股熟悉的感觉铺面而来。依然是使用AES加密，密钥的获得过程和邦邦几乎没有区别。获得API地址和下载服务器地址的地方也几乎和邦邦完全一样。和邦邦不同的地方在于，它使用<a target="_blank" rel="noopener" href="https://msgpack.org/">MessagePack</a>作为内层消息编码，而邦邦使用的是<a target="_blank" rel="noopener" href="https://developers.google.com/protocol-buffers">Protobuf</a>。</p>
-<p>理论上<code>Protobuf</code>是比<code>MessagePack</code>编码节约空间的，因为前者不会在消息里传递结构消息（实际上也没有必要，因为结构本质上是服务端和客户端的约定），后者只是把JSON变换了一种编码方式而已。目前邦邦利用<code>Protobuf</code>编码的MasterDB消息已经接近10M，导致Craft Egg最近不得不再套了一层压缩，以减小消息体积。可以预见的是，Project Sekai一定也会再对MasterDB进行压缩，否则大小增长一定会比邦邦快得多。</p>
-<h2 id="资源文件"><a href="#资源文件" class="headerlink" title="资源文件"></a>资源文件</h2><p>本游戏的资源文件下载地址大体构造与邦邦类似，不过地址里出现了一个GUID的部分，很明显这是服务器返回的东西，因为客户端里没有写死这个。后来对API的调查发现，不带任何参数访问API服务器根地址的话就会获得当前服务器支持的游戏配置，其中就有这个GUID的hash。</p>
-<p>下载了两个文件回来之后发现没有办法直接在<code>AssetStudio</code>里读取，用<a target="_blank" rel="noopener" href="https://hexed.it/">HexEdit</a>打开之后发现文件头并不是普通的<code>AssetBundle</code>的文件头，只能看到明文的FS字样，而且头四个字节似乎不是<code>AssetBundle</code>的一部分。后来跟双草爷爷交流了之后了解到这东西经过异或加密的。从开头保留有FS可以判断出只有五字节被异或，然后空了几个字节，循环往复。去掉头四个字节并且利用异或还原了文件头之后终于可以顺利解析了。于是写了个脚本下载试用版给的所有资源，并且用我自己写的Unity解包脚本全部拆开，发现得到的数据比游戏里给的东西要多，看来Craft Egg还是弄的不干净，还有些<code>AssetBundle</code>里打包进了不应该出现的东西，文件管理也是够混乱的。</p>
-<p>本来以为音频文件要花点时间去找解密用的key，但是使用邦邦的key直接就解密出了能正常播放的音频，免去了这个步骤。不过这游戏设置key的方式也改变了，尝试跟踪了一下也没找到从内存里读取key的办法，现在用的笔记本性能也很弱，分析<code>libil2cpp.so</code>估计需要一整天，就作罢了。</p>
-<p>打开谱面文件一口老血差点喷出来。虽然还是BMS格式，但是头部有这么一句话：</p>
-<blockquote>
-<p>This file was generated by Ched 2.6.2.0.</p>
-</blockquote>
-<p>于是拿着这句话去搜索了一下，找到了一个叫<a target="_blank" rel="noopener" href="https://github.com/paralleltree/Ched">Ched</a>的开源工具，用途嘛……就是制作<code>Chunithm</code>的自制谱。帮世嘉做跟自己街机游戏类似的音游模式还拿不到他们的制谱工具，只能使用开源工具，确实有点黑色幽默的感觉。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这游戏叫换皮其实也不是完全的换皮（相比于某音乐时间），只是使用自己开发框架重新开发了一个游戏，音游部分等等都是重写的，还是做了许多工作。更赞的是那个Virtual Live功能，真正实现在线打call，如果支持AR/VR就更好了。不过，我大概只会选择V家模式，乐团碰不碰看缘分吧。</p>
+<p>I want to learn it because I want to replace some JS programs running on my private cloud with Rust programs. JS runtime is heavy, and not type-safe and memory-safe, the docker images are also heavy (with dependencies\ up to 500MB). The rust programming language seems to solve all of my pains, so let me try it.</p>
+<p>The learning material I used is the <a target="_blank" rel="noopener" href="https://course.rs/about-book.html">Rust Course</a> which is written in Chinese. For English readers, I recommend the official book <a target="_blank" rel="noopener" href="https://doc.rust-lang.org/book/">The Book</a>. All codes run on a 2020 M1 Mac Mini (16+512) under macOS Monterey (12.4).</p>
+<h2 id="Setup-Rust"><a href="#Setup-Rust" class="headerlink" title="Setup Rust"></a>Setup Rust</h2><p>On macOS, setting up the environment for rust programming is very simple with <a target="_blank" rel="noopener" href="https://brew.sh/">brew</a>. Just search for <a target="_blank" rel="noopener" href="https://formulae.brew.sh/formula/rustup-init">rustup</a>, install it with</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ brew install rustup-init</span><br><span class="line">$ rustup-init</span><br></pre></td></tr></tbody></table></figure>
+<p>and follow the prompts to finish the installation. It will install all rust toolchains including the compiler <code>rustc</code> and the package and project manager <code>cargo</code>. A C-compiler is possibly also necessary, install it with</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ xcode-select --install</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="As-always-Hello-World"><a href="#As-always-Hello-World" class="headerlink" title="As always, Hello World"></a>As always, Hello World</h2><p>It is extremely simple to create a <code>Hello World</code> program for rust:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cargo new world_hello</span><br></pre></td></tr></tbody></table></figure>
+<p>and you will have a folder named <code>world_hello</code> with an already well-written “Hello World” rust program. Just run it with</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cargo run</span><br></pre></td></tr></tbody></table></figure>
+<p>and you will see the following outputs</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">  Compiling world_hello v0.1.0 (/***/world_hello)</span><br><span class="line">    Finished dev [unoptimized + debuginfo] target(s) in 0.42s</span><br><span class="line">     Running `target/debug/world_hello`</span><br><span class="line">Hello, world!</span><br></pre></td></tr></tbody></table></figure>
+<p>and boom, a rust version “Hello World” is finished, fast and simple.</p>
+<p>But you may notice the <code>debug</code> in the path, which indicates that the compiling target is a <code>debug</code> version of program. To obtain a <code>release</code> version, just append <code>--release</code> to <code>cargo run</code> command:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ cargo run --release</span><br><span class="line">  Compiling world_hello v0.1.0 (/***/world_hello)</span><br><span class="line">    Finished release [optimized] target(s) <span class="keyword">in</span> 0.42s</span><br><span class="line">     Running `target/release/world_hello`</span><br><span class="line">Hello, world!</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Another great thing is that <code>cargo new</code> will also initialize the folder as a git repository, and add a default <code>.gitignore</code> for you, which is very convenient.</p>
+<p>All information about this “Hello World” program is recorded in <code>Cargo.toml</code> file:</p>
+<figure class="highlight toml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[package]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">"world_hello"</span></span><br><span class="line"><span class="attr">version</span> = <span class="string">"0.1.0"</span></span><br><span class="line"><span class="attr">edition</span> = <span class="string">"2021"</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>The edition field indicates that this rust program will use the 2021 edition to compile. The rust release edition every 3 years, the last two editions are 2015 and 2018. 2021 is therefore the latest edition.</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>What I learned from this part:</p>
+<ol>
+<li>How to set up the Rust development environment</li>
+<li>How to create a new rust project</li>
+<li>How to run a rust project</li>
+<li>How to determine rust project information</li>
+</ol>
+<p>Next, I will learn deeper the syntax and features of the rust programming language.</p>
 
     </div>
 
@@ -283,22 +302,20 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/unity/" rel="tag"># unity</a>
-              <a href="/tags/Project-Sekai/" rel="tag"># Project Sekai</a>
+              <a href="/tags/Develop/" rel="tag"># Develop</a>
+              <a href="/tags/Rust/" rel="tag"># Rust</a>
+              <a href="/tags/Notes/" rel="tag"># Notes</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2020/07/31/study-k8s-with-microk8s/" rel="prev" title="First Kubernetes deployment with microk8s and cert-manager">
-                  <i class="fa fa-chevron-left"></i> First Kubernetes deployment with microk8s and cert-manager
+                <a href="/2021/10/16/sekai-viewer-first-anniversary-survey-results/" rel="prev" title="Result of Sekai Viewer's first anniversary survey">
+                  <i class="fa fa-chevron-left"></i> Result of Sekai Viewer's first anniversary survey
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/01/11/sekai-world-live2d-plugin/" rel="next" title="Sekai World releases its Live2D plugin">
-                  Sekai World releases its Live2D plugin <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>

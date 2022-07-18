@@ -9,8 +9,39 @@
     <atom:link href="https://blog.dna.moe/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description></description>
-    <pubDate>Sun, 17 Jul 2022 20:03:32 GMT</pubDate>
+    <pubDate>Mon, 18 Jul 2022 22:07:48 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>Rust Programming Language Learning Note - Part 1</title>
+      <link>https://blog.dna.moe/2022/07/19/learning-note-rust-1/</link>
+      <guid>https://blog.dna.moe/2022/07/19/learning-note-rust-1/</guid>
+      <pubDate>Mon, 18 Jul 2022 22:07:01 GMT</pubDate>
+      
+      <description>&lt;p&gt;&lt;a href=&quot;https://rust-lang.org/&quot;&gt;Rust&lt;/a&gt; is a modern compiled programming language. It is fast and secure, it is a strong-typed language, and it can build any type of program. Due to tiny binary output, it is suitable to build tiny docker images for running on the cloud.&lt;/p&gt;</description>
+      
+      
+      
+      <content:encoded><![CDATA[<html><head></head><body><p><a href="https://rust-lang.org/">Rust</a> is a modern compiled programming language. It is fast and secure, it is a strong-typed language, and it can build any type of program. Due to tiny binary output, it is suitable to build tiny docker images for running on the cloud.</p><span id="more"></span><p>I want to learn it because I want to replace some JS programs running on my private cloud with Rust programs. JS runtime is heavy, and not type-safe and memory-safe, the docker images are also heavy (with dependencies\ up to 500MB). The rust programming language seems to solve all of my pains, so let me try it.</p><p>The learning material I used is the <a href="https://course.rs/about-book.html">Rust Course</a> which is written in Chinese. For English readers, I recommend the official book <a href="https://doc.rust-lang.org/book/">The Book</a>. All codes run on a 2020 M1 Mac Mini (16+512) under macOS Monterey (12.4).</p><h2 id="Setup-Rust"><a href="#Setup-Rust" class="headerlink" title="Setup Rust"></a>Setup Rust</h2><p>On macOS, setting up the environment for rust programming is very simple with <a href="https://brew.sh/">brew</a>. Just search for <a href="https://formulae.brew.sh/formula/rustup-init">rustup</a>, install it with</p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ brew install rustup-init</span><br><span class="line">$ rustup-init</span><br></pre></td></tr></tbody></table></figure><p>and follow the prompts to finish the installation. It will install all rust toolchains including the compiler <code>rustc</code> and the package and project manager <code>cargo</code>. A C-compiler is possibly also necessary, install it with</p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ xcode-select --install</span><br></pre></td></tr></tbody></table></figure><h2 id="As-always-Hello-World"><a href="#As-always-Hello-World" class="headerlink" title="As always, Hello World"></a>As always, Hello World</h2><p>It is extremely simple to create a <code>Hello World</code> program for rust:</p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cargo new world_hello</span><br></pre></td></tr></tbody></table></figure><p>and you will have a folder named <code>world_hello</code> with an already well-written “Hello World” rust program. Just run it with</p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cargo run</span><br></pre></td></tr></tbody></table></figure><p>and you will see the following outputs</p><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">  Compiling world_hello v0.1.0 (/***/world_hello)</span><br><span class="line">    Finished dev [unoptimized + debuginfo] target(s) in 0.42s</span><br><span class="line">     Running `target/debug/world_hello`</span><br><span class="line">Hello, world!</span><br></pre></td></tr></tbody></table></figure><p>and boom, a rust version “Hello World” is finished, fast and simple.</p><p>But you may notice the <code>debug</code> in the path, which indicates that the compiling target is a <code>debug</code> version of program. To obtain a <code>release</code> version, just append <code>--release</code> to <code>cargo run</code> command:</p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ cargo run --release</span><br><span class="line">  Compiling world_hello v0.1.0 (/***/world_hello)</span><br><span class="line">    Finished release [optimized] target(s) <span class="keyword">in</span> 0.42s</span><br><span class="line">     Running `target/release/world_hello`</span><br><span class="line">Hello, world!</span><br></pre></td></tr></tbody></table></figure><p>Another great thing is that <code>cargo new</code> will also initialize the folder as a git repository, and add a default <code>.gitignore</code> for you, which is very convenient.</p><p>All information about this “Hello World” program is recorded in <code>Cargo.toml</code> file:</p><figure class="highlight toml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[package]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">"world_hello"</span></span><br><span class="line"><span class="attr">version</span> = <span class="string">"0.1.0"</span></span><br><span class="line"><span class="attr">edition</span> = <span class="string">"2021"</span></span><br></pre></td></tr></tbody></table></figure><p>The edition field indicates that this rust program will use the 2021 edition to compile. The rust release edition every 3 years, the last two editions are 2015 and 2018. 2021 is therefore the latest edition.</p><h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>What I learned from this part:</p><ol><li>How to set up the Rust development environment</li><li>How to create a new rust project</li><li>How to run a rust project</li><li>How to determine rust project information</li></ol><p>Next, I will learn deeper the syntax and features of the rust programming language.</p></body></html>]]></content:encoded>
+      
+      
+      <category domain="https://blog.dna.moe/categories/Learn/">Learn</category>
+      
+      <category domain="https://blog.dna.moe/categories/Learn/Rust/">Rust</category>
+      
+      <category domain="https://blog.dna.moe/categories/Learn/Rust/Programming/">Programming</category>
+      
+      
+      <category domain="https://blog.dna.moe/tags/Develop/">Develop</category>
+      
+      <category domain="https://blog.dna.moe/tags/Rust/">Rust</category>
+      
+      <category domain="https://blog.dna.moe/tags/Notes/">Notes</category>
+      
+      
+      <comments>https://blog.dna.moe/2022/07/19/learning-note-rust-1/#disqus_thread</comments>
+      
+    </item>
     
     <item>
       <title>Result of Sekai Viewer&#39;s first anniversary survey</title>
